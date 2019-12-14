@@ -33,8 +33,14 @@ var server = net.createServer(function(socket){
                 item_length = items[0];
                 cmd = items[1];
                 machine_id = items[items.length-1];
-                clientlist[machine_id] = socket
-                socket2machine[socket].push(machine_id)
+                clientlist[machine_id] = socket;
+                if (!socket2machine[socket]){
+                    socket2machine[socket] = Array(machine_id);
+                }
+                else{
+                    socket2machine[socket].push(machine_id);
+
+                }
                 zk_client.write(msg+"\r\n");
 
             }
@@ -75,7 +81,7 @@ server.listen(config.local.port, function(){
     
     })
 }
-connect();
+reconnect();
         zk_client.on('error', function(err) {
             console.log('Error in connection:', err);
         });
@@ -97,8 +103,6 @@ connect();
                 console.log("send to marking machine:",msg);
                 items = msg.split('@');
                 console.log(items);
-                item_length = items[0];
-                cmd = items[1];
                 machine_id = items[items.length-1];
                 marking_socket =clientlist[machine_id] 
                 marking_socket.write(msg+"\r\n");
