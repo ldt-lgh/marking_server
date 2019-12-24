@@ -1,0 +1,14 @@
+{
+    "name": "marking-api-server",
+    "version": "1.0.0", 
+    "description": "增位项目API文档", 
+    "title": "marking-api-server API",
+    "url" : "http://localhost:8080/", 
+    "sampleUrl": "http://localhost:8080/",
+    "forceLanguage":"zh-cn",
+    "template": {
+      "withCompare": true,
+      "withGenerator": true
+    }
+  
+  }
