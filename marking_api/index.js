@@ -21,6 +21,25 @@ var port = process.env.PORT || 8080;        // set our port
 var router = express.Router();              // 获得express router对象
 // 用get动词访问 http://localhost:8080/api
 /**
+ * 上传模板
+ * @api {POST} /api/template/ 上传模板
+ * @apiDescription 客户端上传模板
+ * @apiName postTemplate
+ * @apiParam (path参数) {string} area
+ * @apiParam (path参数) {string} style
+ * @apiParam (path参数) {number} pos
+ * @apiSampleRequest /api/template
+ * @apiGroup marking
+ * @apiVersion 1.0.0
+ */
+router.post('/template', function(req, res) {
+    const t = req.body;
+    console.log(t)
+    bt.create(t).then(tm=>{
+        console.log(tm);
+        res.end('succ');});
+});
+/**
  * 获取模板列表
  * @api {GET} /api/template 获得模板列表
  * @apiDescription 获得模板列表
@@ -89,25 +108,7 @@ router.get('/appkey/:appkey', function(req, res) {
     
 });
 
-/**
- * 上传模板
- * @api {POST} /api/template/ 上传模板
- * @apiDescription 客户端上传模板
- * @apiName template
- * @apiParam (path参数) {string} area
- * @apiParam (path参数) {string} style
- * @apiParam (path参数) {number} pos
- * @apiSampleRequest /api/template
- * @apiGroup marking
- * @apiVersion 1.0.0
- */
-router.post('/template', function(req, res) {
-    const t = req.body;
-    console.log(t)
-    bt.create(t).then(tm=>{
-        console.log(tm);
-        res.end('succ');});
-});
+
 // 注册路由
 // 所有的路由会加上“／api”前缀
 app.use('/api', router);
