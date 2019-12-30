@@ -44,20 +44,22 @@ router.post('/template', function(req, res) {
  * @api {GET} /api/template 获得模板列表
  * @apiDescription 获得模板列表
  * @apiName getTemplate
- * @apiSampleRequest /api/template
+ * @apiParam (path参数) {string} area
+ * @apiSampleRequest /api/template/长沙
  * @apiGroup marking
  * @apiVersion 1.0.0
  */
-router.get('/template', function(req, res) {
+router.get('/template/:area', function(req, res) {
+    console.log(req.params.area);
     bt.findAll({
         raw:true,
         attributes:['id', 'area', 'template_style', 'template_pos', 'start_time','end_time','status'],
-        order:['status']
+        order:['status'],
+        where:{'area':req.params.area}
     }).then(result=>{
-        console.log(JSON.stringify(result));
-        resStr = JSON.stringify(result);
-        res.json(result);
-    })
+        res_json = {status:'ok', data:result}
+        res.json(res_json);
+    }).catch(e=>res.json({status:"error", message:e }))
     
 });
 /**
@@ -72,16 +74,15 @@ router.get('/template', function(req, res) {
  */
 router.get('/template/:templateID', function(req, res) {
     console.log(req.params);
-    bt.findAll({
+    bt.findOne({
         raw:true,
         attributes:['id', 'area', 'template_style', 'template_pos', 'start_time','end_time','status'],
         order:['status'],
         where:{'id':[req.params.templateID]}
     }).then(result=>{
-        console.log(JSON.stringify(result));
-        resStr = JSON.stringify(result);
-        res.json(result);
-    })
+        res_json = {status:'ok', data:result}
+        res.json(res_json);
+    }).catch(e=>res.json({status:"error", message:e }))
     
 });
 /**
@@ -95,16 +96,15 @@ router.get('/template/:templateID', function(req, res) {
  * @apiVersion 1.0.0
  */
 router.get('/appkey/:appkey', function(req, res) {
-    ba.findAll({
+    ba.findOne({
         raw:true,
         attributes:['id', 'area', 'appkey', 'status'],
         order:['status'],
         where:{'appkey':req.params.appkey}
     }).then(result=>{
-        console.log(JSON.stringify(result));
-        resStr = JSON.stringify(result);
-        res.json(result);
-    })
+        res_json = {status:'ok', data:result}
+        res.json(res_json);
+    }).catch(e=>res.json({status:"error", message:e }))
     
 });
 

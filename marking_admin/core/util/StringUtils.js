@@ -117,5 +117,6 @@ exports.sidebarRecursion = (data, parent_id) => {
             list.push(v);
         }
     }
+    console.log("menu list:",list);
     return list;
 };

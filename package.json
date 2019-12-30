@@ -9,6 +9,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "express": "^4.17.1",
     "log4js": "^6.1.0",
     "node-windows": "^0.1.14"
   }

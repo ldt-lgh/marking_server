@@ -8,34 +8,29 @@ const common = require('../core/common');
 const stringUtils = require('../core/util/StringUtils');
 const _ = require('lodash');
 var UUID = require('uuid');
-/* GET users listing. */
+/* GET appkey listing. */
 router.get('/', async (req, res, next) => {
     let user = req.session.user;
-    let menu_active = req.session.menu_active['/users'] || {};
+    let menu_active = req.session.menu_active['/appkey'] || {};
     let permissions = await perm.getPermissions(req);
-    res.render('user', {
+    res.render('appkey', {
         user: user,
         menus: req.session.menus,
         menu_active: menu_active,
         permissions: permissions,
-        title: '用户管理'
+        title: 'appkey管理'
     });
 });
 router.get('/load', async(req, res, next) => {
     try {
-        var sqlcount = "select count(*) count from bs_user where is_del=0 ";
-        var sql = "select * from bs_user where is_del=0 ";
+        var sqlcount = "select count(*) count from bs_appkey where is_del=0";
+        var sql = "select * from bs_appkey where is_del=0";
 
-        var s_name = req.query.s_name;
-        var s_user_name = req.query.s_user_name;
+        var s_area= req.query.s_area;
 
-        if (s_name) {
-            sqlcount = sqlcount + " and name like '%" + s_name.trim() + "%'";
-            sql = sql + " and name like '%" + s_name.trim() + "%'";
-        }
-        if (s_user_name) {
-            sqlcount = sqlcount + " and user_name like '%" + s_user_name.trim() + "%'";
-            sql = sql + " and user_name like '%" + s_user_name.trim() + "%'";
+        if (s_area) {
+            sqlcount = sqlcount + " and name like '%" + s_area.trim() + "%'";
+            sql = sql + " and name like '%" + s_area.trim() + "%'";
         }
         var start = req.query.start;
         var length = req.query.length;
@@ -48,8 +43,10 @@ router.get('/load', async(req, res, next) => {
         start = parseInt(start) || 0;
         length = parseInt(length) || 0;
         draw = parseInt(draw) || 0;
+        log.info(sqlcount)
         var memuCount = await mysql.query(sqlcount);
         sql = sql + " ORDER BY id DESC limit " + start + "," + length;
+        log.info(sql)
         var result = await mysql.query(sql);
         var backResult = {
             draw: draw,
@@ -60,11 +57,10 @@ router.get('/load', async(req, res, next) => {
         for (var i in result) {
             backResult.data.push({
                 id: result[i].id,
-                is: result[i].id + "_",
-                user_name: result[i].user_name,
-                name: result[i].name,
-                created_at: result[i].created_at ? moment(result[i].created_at).format("YYYY-MM-DD HH:mm:ss") : "",
-                modified_at: result[i].modified_at != "0000-00-00 00:00:00" ? moment(result[i].modified_at).format("YYYY-MM-DD HH:mm:ss") : "",
+                area: result[i].area,
+                appkey: result[i].appkey,
+                created_at: result[i].create_time ? moment(result[i].create_time).format("YYYY-MM-DD HH:mm:ss") : "",
+                modified_at: result[i].update_time!= "0000-00-00 00:00:00" ? moment(result[i].update_time).format("YYYY-MM-DD HH:mm:ss") : "",
             });
         }
         res.status(200).json(backResult);
@@ -83,18 +79,14 @@ router.get('/save', async(req, res, next) => {
         var user = req.session.user;
         log.info("user save params: ", req.query);
         var e_id = req.query.e_id;
-        var e_user_name = req.query.e_user_name;
-        var e_name = req.query.e_name;
-        var e_password = req.query.e_password;
-        if (e_name == "" || e_name.trim() == "") {
-            result.msg = "用户名称不能为空";
-        } else if (e_id == "" && (e_password == "" || e_password.trim() == "")) {
-            result.msg = "密码不能为空";
-        }        if (result.msg != "") {
+        var e_area= req.query.e_area;
+        var e_appkey= req.query.e_appkey;
+        if (e_area== "" || e_area.trim() == "") {
+            result.msg = "地市名称不能为空";
+        }       if (result.msg != "") {
             result.error = 1;
         } else {
             var ret, sql;
-            var salt = UUID.v1();
             if (e_id) {
                 // 判断是否有更新权限
                 let updatePermission = await perm.permission(req, 'update');
@@ -105,18 +97,12 @@ router.get('/save', async(req, res, next) => {
                     return;
                 }
 
-                sql = "update bs_user set name=?,user_name=?, modified_id=?, modified_at=?";
-                var params = [e_name, e_user_name,  user.id, new Date()];
-                if (e_password != "" || e_password.trim() != "") {
-                    sql = sql + ",password=? ";
-                    sql = sql + ",salt=? ";
-                    params.push(stringUtils.createPassword(e_password.trim()+salt));
-                    params.push(salt);
-                }
+                sql = "update bs_appkey set area=?,appkey=?, modified_id=?, modified_at=?";
+                var params = [e_area, e_appkey,  user.id, new Date()];
                 sql = sql + "where id=?";
                 params.push(e_id);
                 ret = await mysql.query(sql, params);
-                await common.saveOperateLog(req, "更新用户：" + e_name + ";ID: " + e_id);
+                await common.saveOperateLog(req, "更新模板：" + e_name + ";ID: " + e_id);
             } else {
 
                 // 判断是否有新增权限
@@ -127,23 +113,22 @@ router.get('/save', async(req, res, next) => {
                     res.status(200).json(result);
                     return;
                 }
-                sql = "select * from bs_user where user_name=? and is_del=0";
-                var users = await mysql.query(sql, e_user_name);
+                sql = "select * from bs_appkey where id=? and is_del=0";
+                var users = await mysql.query(sql, e_id);
                 if (users.length > 0) {
                     result.error = 1;
-                    result.msg = "用户名已经存在！";
+                    result.msg = "appkeyy已经存在！";
                 } else {
-                    sql = "insert bs_user(user_name, password,name,salt,creator_id) values (?,?,?,?,?,?,?,?,?)";
-                    var password = stringUtils.createPassword(e_password.trim()+salt);
-                    ret = await mysql.query(sql, [e_user_name, password, e_name, e_mail, e_phone, e_sex, e_birthday, salt, user.id]);
-                    await common.saveOperateLog(req, "新增用户：" + e_name);
+                    sql = "insert bs_appkey(area, appkey,creator_id) values (?,?,?)";
+                    ret = await mysql.query(sql, [e_area, e_appkey,  user.id]);
+                    await common.saveOperateLog(req, "新增appkey：" + e_area);
                 }
             }
-            log.info("save user ret: ", ret);
+            log.info("save appkey ret: ", ret);
         }
         res.status(200).json(result);
     } catch (e) {
-        log.error("save user ret:", e);
+        log.error("save appkey ret:", e);
         result.error = 1;
         result.msg = "保存失败，请联系管理员";
         res.status(200).json(result);

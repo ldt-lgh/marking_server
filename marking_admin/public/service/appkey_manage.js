@@ -5,30 +5,23 @@ var datatable = $('#users').DataTable({
     'lengthChange': true,
     'searching': false,
     'info': true,
-    'ajax': '/users/load',
+    'ajax': '/appkey/load',
     'autoWidth': true,
     "ordering": false,
     "columns": [
         {
             "data": "id",
             "render": function (data, type, full, meta) {
-                return '<input type="checkbox" name="user_id_' + data + '" value="' + data + '">';
+                return '<input type="checkbox" name="appkey_id_' + data + '" value="' + data + '">';
             }
         },
-        {"data": "name"},
-        {"data": "user_name"},
+        {"data": "area"},
+        {"data":"appkey"},
         {"data": "created_at"},
         {"data": "modified_at"},
         {
             "data": "is",
             render: function (data, type, row, meta) {
-                var sex = row.sex;
-                if (sex == "女") {
-                    row.sex = 0;
-                }
-                if (sex == "男") {
-                    row.sex = 1;
-                }
                 // 判断菜单权限
                 var operate = "";
                 if(permissions.update) {
@@ -64,22 +57,20 @@ var datatable = $('#users').DataTable({
 });
 
 //搜索
-$("#user-search").on("click", function () {
-    datatable.ajax.url('/users/load?s_user_name=' + $("#s_user_name").val() + '&s_name=' + $("#s_name").val()).load();
+$("#appkey-search").on("click", function () {
+    datatable.ajax.url('/appkey/load?s_area=' + $("#s_area").val()).load();
 });
 
-$("#user_refresh").on("click", function () {
-    datatable.ajax.url('/users/load?s_user_name=' + $("#s_user_name").val() + '&s_name=' + $("#s_name").val()).load();
+$("#appkey_refresh").on("click", function () {
+    datatable.ajax.url('/appkey/load?s_area=' + $("#s_area").val()).load();
 });
 var initForm = function (modal, data) {
     if (data) {
         console.log(data)
-        modal.find('.modal-body label#user_password_desc').show();
         modal.find('.modal-body input#e_id').val(data.id);
-        modal.find('.modal-body input#e_user_name').val(data.user_name);
-        modal.find('.modal-body input#e_name').val(data.name);
+        modal.find('.modal-body input#e_appkey').val(data.appkey);
+        modal.find('.modal-body input#e_area').val(data.area);
     } else {
-        modal.find('.modal-body label#user_password_desc').hide();
         modal.find('.modal-body form input').val("");
         modal.find('.modal-body form select').val("0");
     }
@@ -95,7 +86,7 @@ $('#e-dialog-user').on('show.bs.modal', function (event) {
     initForm(modal, data);
 });
 
-$("#user_edit").on("click", function () {
+$("#appkey_edit").on("click", function () {
     var ids = getIds();
     if (ids.length != 1) {
         new Noty({
@@ -131,7 +122,7 @@ $('#e-dialog-user').find('.modal-footer #saveUser').click(function () {
     data = list.join("&");
     $.ajax({
         type: "get",
-        url: "/users/save",
+        url: "/appkey/save",
         asyc: false,
         data: data,
         error: function (error) {
@@ -158,7 +149,7 @@ $('#e-dialog-user').find('.modal-footer #saveUser').click(function () {
                     timeout: '2000'
                 }).show();
                 $('#e-dialog-user').modal('hide');
-                datatable.ajax.url('/users/load?s_user_name=' + $("#s_user_name").val() + '&s_name=' + $("#s_name").val()).load();
+                datatable.ajax.url('/appkey/load?s_area=' + $("#s_area").val() ).load();
             }
         }
     });
@@ -166,7 +157,7 @@ $('#e-dialog-user').find('.modal-footer #saveUser').click(function () {
 var deleteUserData = function (ids) {
     $.ajax({
         type: "delete",
-        url: "/users/delete",
+        url: "/appkey/delete",
         asyc: false,
         data: {ids: ids},
         error: function (error) {
@@ -192,13 +183,13 @@ var deleteUserData = function (ids) {
                     text: result.msg || '删除用户成功',
                     timeout: '2000'
                 }).show();
-                datatable.ajax.url('/users/load?s_user_name=' + $("#s_user_name").val() + '&s_name=' + $("#s_name").val()).load();
+                datatable.ajax.url('/appkey/load?s_area=' + $("#s_area").val() ).load();
             }
         }
     });
 };
 //批量删除
-$("#user_batch_remove").on("click", function () {
+$("#appkey_batch_remove").on("click", function () {
     var ids = getIds();
     if (ids.length == 0) {
         new Noty({

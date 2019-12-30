@@ -102,7 +102,9 @@ router.get('/sidebar', function (req, res, next) {
     var result = {
         error: 0,
         data: req.session.menus2
+        //data:[]
     };
+    console.log("sidebar:",result);
     res.status(200).json(result);
 });
 

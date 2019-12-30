@@ -13,6 +13,8 @@ var menu_auth = require("./core/menu_auth");
 
 var routes = require('./routes/index');
 var users = require('./routes/users');
+var appkey = require('./routes/appkey');
+var template = require('./routes/template');
 var login = require('./routes/login');
 var menus = require('./routes/menus');
 var verify = require('./routes/verify');
@@ -76,6 +78,8 @@ app.use(function (req, res, next) {
 app.use('/', routes);
 app.use('/verify', verify);
 app.use('/users', users);
+app.use('/appkey', appkey);
+app.use('/template', template);
 app.use('/login', login);
 app.use('/menus', menus);
 app.use('/roles', roles);

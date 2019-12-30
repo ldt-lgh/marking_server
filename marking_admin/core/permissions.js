@@ -20,7 +20,11 @@ module.exports.getPermissions = async (req) => {
         "inner join bs_user_role c on b.role_id = c.role_id " +
         "inner join bs_user d on c.user_id = d.id " +
         "where d.id = ? and a.type = 1 and a.parent_id = ?";
+    console.log("sql:", sql)
+    console.log("user_id:",user_id)
+    console.log("menu_id:", menu_id)
     let permissions = await mysql.query(sql, [user_id, menu_id]);
+    console.log("permissions:",permissions)
     let obj = {};
     for (let i = 0; i < permissions.length; i++) {
         let permObj = permissions[i];

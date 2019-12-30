@@ -11,15 +11,11 @@
                 <div class="box-body">
                     <div class="row">
                         <div class="col-md-3 col-sm-4">
-                            <span>用户名称：</span>
-                            <input type="text" class=".col-xs-4" id="s_name" placeholder="请输入用户名称"/>
+                            <span>地市：</span>
+                            <input type="text" class=".col-xs-4" id="s_area" placeholder="请输入地市名称"/>
                         </div>
                         <div class="col-md-3 col-sm-4">
-                            <span>登录名：</span>
-                            <input type="text" class=".col-xs-4" id="s_user_name" placeholder="请输入登录名"/>
-                        </div>
-                        <div class="col-md-3 col-sm-4">
-                            <a class="btn btn-default btn-sm" href="javascript:void(0)" id="user-search"><i
+                            <a class="btn btn-default btn-sm" href="javascript:void(0)" id="template-search"><i
                                         class="glyphicon glyphicon-search"></i>
                                 查询</a>
                         </div>
@@ -34,26 +30,26 @@
                 <div class="box-header with-border">
                     <b>工具栏： </b>
                     <caption>
-                        <button type="button" class="btn btn-default" id="user_refresh"><i
+                        <button type="button" class="btn btn-default" id="template_refresh"><i
                                     class="fa fa-refresh icon-white"></i> 刷新
                         </button>
                         <% if(permissions.add) { %>
-                        <button type="button" class="btn btn-success" id="user_add" data-toggle="modal"
+                        <button type="button" class="btn btn-success" id="template_add" data-toggle="modal"
                                 data-target="#e-dialog-user" data-whatever=""><i
                                     class="glyphicon glyphicon-edit icon-white"></i> 新增
                         </button>
                         <%}%>
                         <% if(permissions.update) { %>
-                        <button type="button" class="btn btn-info" id="user_edit" data-toggle="modal" id="user-edit"><i
+                        <button type="button" class="btn btn-info" id="template_edit" data-toggle="modal" id="user-edit"><i
                                     class="fa fa-edit icon-white"></i> 编辑
                         </button>
                         <%}%>
                         <% if(permissions.delete) { %>
-                        <button type="button" class="btn btn-danger" id="user_batch_remove"><i
+                        <button type="button" class="btn btn-danger" id="template_batch_remove"><i
                                     class="fa fa-remove icon-white"></i> 删除
                         </button>
                         <%}%>
-                        <button type="button" class="btn btn-info" id="user_find" onclick="optionUserData(this);"><i
+                        <button type="button" class="btn btn-info" id="template_find" onclick="optionUserData(this);"><i
                                     class="glyphicon glyphicon-zoom-in icon-white"></i> 详情
                         </button>
                     </caption>
@@ -67,14 +63,22 @@
                             <th><input value="all" type="checkbox"
                                        onclick="$('.datatable tbody :checkbox').prop('checked', this.checked);"/>
                             </th>
-                            <th>用户名称</th>
-                            <th>登录名称</th>
+                            <th>地市名称</th>
+                            <th>模板样式</th>
+                            <th>位置</th>
+                            <th>启用时间</th>
+                            <th>停用时间</th>
+                            <th>状态</th>
                             <th>创建时间</th>
                             <th>更新时间</th>
                             <th>操作</th>
                         </tr>
                         </thead>
                         <tbody>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                        <th></th>
                         <th></th>
                         <th></th>
                         <th></th>
@@ -106,24 +110,47 @@
                 <form class="form-horizontal" id="e-menu-role-form">
                     <div class="box-body">
                         <input type="hidden" data-name="e_id" name="e_id" id="e_id"/>
-                        <div class="form-group">
-                            <label for="name" class="col-sm-2 control-label">登录名</label>
+                        <div class="form-group" >
+                            <label for="area" class="col-sm-2 control-label">地市</label>
+                        <div class="col-sm-10">
+ <input type="text" class="form-control" id="e_area", name="e_area"
+                                                          placeholder="请输入template">
                             <div class="col-sm-10">
-                                <input type="text" class="form-control" id="e_user_name" name="e_user_name"
-                                       placeholder="请输入登录名">
+                        </div>
+                        </div>
+                        <div class="form-group" id="form-template">
+                            <label for="template" class="col-sm-2 control-label">模板</label>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control" id="e_template_style" name="e_template_style"
+                                       placeholder="请输入template"><label id="template_password_desc">不修改密码，该项可为空</label>
                             </div>
                         </div>
-                        <div class="form-group">
-                            <label for="username" class="col-sm-2 control-label">用户名称</label>
+                        <div class="form-group" id="form-template">
+                            <label for="template" class="col-sm-2 control-label">模板</label>
                             <div class="col-sm-10">
-                                <input type="text" class="form-control" id="e_name" name="e_name" placeholder="请输入用户名称">
+                                <input type="text" class="form-control" id="e_template_pos" name="e_template_pos"
+                                       placeholder="请输入template"><label id="template_password_desc">不修改密码，该项可为空</label>
                             </div>
                         </div>
-                        <div class="form-group" id="form-password">
-                            <label for="password" class="col-sm-2 control-label">用户密码</label>
+                        <div class="form-group" id="form-starttime">
+                            <label for="template" class="col-sm-2 control-label">启用时间</label>
                             <div class="col-sm-10">
-                                <input type="password" class="form-control" id="e_password" name="e_password"
-                                       placeholder="请输入密码"><label id="user_password_desc">不修改密码，该项可为空</label>
+                                <input type="text" class="form-control" id="e_start_time" name="e_start_time"
+                                       placeholder="请输入template">
+                            </div>
+                        </div>
+                        <div class="form-group" id="form-endtime">
+                            <label for="template" class="col-sm-2 control-label">停用时间</label>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control" id="e_end_time" name="e_end_time"
+                                       placeholder="请输入template">
+                            </div>
+                        </div>
+                        <div class="form-group" id="form-status">
+                            <label for="template" class="col-sm-2 control-label">状态</label>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control" id="e_status" name="e_status"
+                                       placeholder="请输入template">
                             </div>
                         </div>
                     </div>
@@ -144,4 +171,4 @@
 </script>
 
 <script src="/javascripts/md5.js"></script>
-<script src="/service/user_manage.js"></script>
+<script src="/service/template_manage.js"></script>

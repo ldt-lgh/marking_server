@@ -11,15 +11,11 @@
                 <div class="box-body">
                     <div class="row">
                         <div class="col-md-3 col-sm-4">
-                            <span>用户名称：</span>
-                            <input type="text" class=".col-xs-4" id="s_name" placeholder="请输入用户名称"/>
+                            <span>地市：</span>
+                            <input type="text" class=".col-xs-4" id="s_area" placeholder="请输入地市名称"/>
                         </div>
                         <div class="col-md-3 col-sm-4">
-                            <span>登录名：</span>
-                            <input type="text" class=".col-xs-4" id="s_user_name" placeholder="请输入登录名"/>
-                        </div>
-                        <div class="col-md-3 col-sm-4">
-                            <a class="btn btn-default btn-sm" href="javascript:void(0)" id="user-search"><i
+                            <a class="btn btn-default btn-sm" href="javascript:void(0)" id="appkey-search"><i
                                         class="glyphicon glyphicon-search"></i>
                                 查询</a>
                         </div>
@@ -34,26 +30,26 @@
                 <div class="box-header with-border">
                     <b>工具栏： </b>
                     <caption>
-                        <button type="button" class="btn btn-default" id="user_refresh"><i
+                        <button type="button" class="btn btn-default" id="appkey_refresh"><i
                                     class="fa fa-refresh icon-white"></i> 刷新
                         </button>
                         <% if(permissions.add) { %>
-                        <button type="button" class="btn btn-success" id="user_add" data-toggle="modal"
+                        <button type="button" class="btn btn-success" id="appkey_add" data-toggle="modal"
                                 data-target="#e-dialog-user" data-whatever=""><i
                                     class="glyphicon glyphicon-edit icon-white"></i> 新增
                         </button>
                         <%}%>
                         <% if(permissions.update) { %>
-                        <button type="button" class="btn btn-info" id="user_edit" data-toggle="modal" id="user-edit"><i
+                        <button type="button" class="btn btn-info" id="appkey_edit" data-toggle="modal" id="appkey-edit"><i
                                     class="fa fa-edit icon-white"></i> 编辑
                         </button>
                         <%}%>
                         <% if(permissions.delete) { %>
-                        <button type="button" class="btn btn-danger" id="user_batch_remove"><i
+                        <button type="button" class="btn btn-danger" id="appkey_batch_remove"><i
                                     class="fa fa-remove icon-white"></i> 删除
                         </button>
                         <%}%>
-                        <button type="button" class="btn btn-info" id="user_find" onclick="optionUserData(this);"><i
+                        <button type="button" class="btn btn-info" id="appkey_find" onclick="optionUserData(this);"><i
                                     class="glyphicon glyphicon-zoom-in icon-white"></i> 详情
                         </button>
                     </caption>
@@ -67,8 +63,8 @@
                             <th><input value="all" type="checkbox"
                                        onclick="$('.datatable tbody :checkbox').prop('checked', this.checked);"/>
                             </th>
-                            <th>用户名称</th>
-                            <th>登录名称</th>
+                            <th>地市名称</th>
+                            <th>appkey</th>
                             <th>创建时间</th>
                             <th>更新时间</th>
                             <th>操作</th>
@@ -107,23 +103,15 @@
                     <div class="box-body">
                         <input type="hidden" data-name="e_id" name="e_id" id="e_id"/>
                         <div class="form-group">
-                            <label for="name" class="col-sm-2 control-label">登录名</label>
+                            <label for="area" class="col-sm-2 control-label">地市</label>
                             <div class="col-sm-10">
-                                <input type="text" class="form-control" id="e_user_name" name="e_user_name"
-                                       placeholder="请输入登录名">
-                            </div>
                         </div>
-                        <div class="form-group">
-                            <label for="username" class="col-sm-2 control-label">用户名称</label>
-                            <div class="col-sm-10">
-                                <input type="text" class="form-control" id="e_name" name="e_name" placeholder="请输入用户名称">
-                            </div>
                         </div>
                         <div class="form-group" id="form-password">
-                            <label for="password" class="col-sm-2 control-label">用户密码</label>
+                            <label for="appkey" class="col-sm-2 control-label">appkey</label>
                             <div class="col-sm-10">
-                                <input type="password" class="form-control" id="e_password" name="e_password"
-                                       placeholder="请输入密码"><label id="user_password_desc">不修改密码，该项可为空</label>
+                                <input type="appkey" class="form-control" id="e_appkey" name="e_appkey"
+                                       placeholder="请输入appkey">
                             </div>
                         </div>
                     </div>
@@ -144,4 +132,4 @@
 </script>
 
 <script src="/javascripts/md5.js"></script>
-<script src="/service/user_manage.js"></script>
+<script src="/service/appkey_manage.js"></script>
