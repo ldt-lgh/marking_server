@@ -29,8 +29,8 @@ router.get('/load', async(req, res, next) => {
         var s_area= req.query.s_area;
 
         if (s_area) {
-            sqlcount = sqlcount + " and name like '%" + s_area.trim() + "%'";
-            sql = sql + " and name like '%" + s_area.trim() + "%'";
+            sqlcount = sqlcount + " and area like '%" + s_area.trim() + "%'";
+            sql = sql + " and area like '%" + s_area.trim() + "%'";
         }
         var start = req.query.start;
         var length = req.query.length;
@@ -164,7 +164,7 @@ router.delete('/delete', async(req, res, next) => {
                 res.status(200).json(result);
                 return;
             } else {
-                var sql = 'update bs_user set is_del=1, modified_at=?, modified_id=? where id in (';
+                var sql = 'update bs_appkey set is_del=1, modified_at=?, modified_id=? where id in (';
                 var sql2 = 'delete from bs_user_role where user_id in (';
                 for (var i = 0; i < ids.length; i++) {
                     if (i == 0) {
@@ -178,9 +178,8 @@ router.delete('/delete', async(req, res, next) => {
                 sql = sql + ")";
                 sql2 = sql2 + ")";
                 await mysql.query2(conn, sql, [new Date(), user.id]);
-                await mysql.query2(conn, sql2);
                 await mysql.commit(conn);
-                await common.saveOperateLog(req, "删除用户ID: " + ids);
+                await common.saveOperateLog(req, "删除appkey ID: " + ids);
             }
         } else {
             result.error = 1;

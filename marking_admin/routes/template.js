@@ -108,7 +108,7 @@ router.get('/save', async(req, res, next) => {
                     return;
                 }
 
-                sql = "update bs_template set area=?,template=?, start_time=?, end_time=?, status=?, modified_id=?, modified_at=?";
+                sql = "update bs_template set area=?,template_style=?, template_pos=?,start_time=?, end_time=?, status=?, modified_id=?, modified_at=?";
                 var params = [e_area, e_template_style,e_template_pos, e_start_time, e_end_time, e_status, user.id, new Date()];
                 sql = sql + "where id=?";
                 params.push(e_id);
@@ -162,7 +162,7 @@ router.delete('/delete', async(req, res, next) => {
     var conn = await mysql.getConnection();
     await mysql.beginTransaction(conn);
     try {
-        log.info("delete user params: ", req.body);
+        log.info("delete template params: ", req.body);
         var ids = req.body.ids;
         var user = req.session.user;
         var user_id = user.id;

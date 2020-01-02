@@ -29,7 +29,7 @@ var datatable = $('#users').DataTable({
                 // 判断菜单权限
                 var operate = "";
                 if(permissions.update) {
-                    operate = operate + '<a class="" data-toggle="modal" id="template_id_' + row.id + '" data-target="#e-dialog-user" data-whatever=\'' + JSON.stringify(row) + '\'><i class="fa fa-edit icon-white"></i> 编辑</a>&nbsp;&nbsp;';
+                    operate = operate + '<a class="" data-toggle="modal" id="template_id_' + row.id + '" data-target="#e-dialog-template" data-whatever=\'' + JSON.stringify(row) + '\'><i class="fa fa-edit icon-white"></i> 编辑</a>&nbsp;&nbsp;';
                 }
                 if(permissions.delete) {
                     operate = operate + '<a name="' + row.id + '" onclick="removeData(' + row.id + ')" class="template_remove"><i class="fa fa-remove icon-white"></i> 删除</a>';
@@ -72,7 +72,7 @@ var initForm = function (modal, data) {
     if (data) {
         console.log(data)
         modal.find('.modal-body input#e_id').val(data.id);
-        modal.find('.modal-body input#e_template_style').val(data.template_style);
+        modal.find('.modal-body textarea#e_template_style').val(data.template_style);
         modal.find('.modal-body input#e_template_pos').val(data.template_pos);
         modal.find('.modal-body input#e_area').val(data.area);
         modal.find('.modal-body input#e_start_time').val(data.start_time);
@@ -85,7 +85,7 @@ var initForm = function (modal, data) {
     modal.find('.modal-body input#e_password').val("");
 };
 //编辑
-$('#e-dialog-user').on('show.bs.modal', function (event) {
+$('#e-dialog-template').on('show.bs.modal', function (event) {
     var modal = $(this);
     var button = $(event.relatedTarget);// Button that triggered the modal
     var data = button.data('whatever'); // Extract info from data-* attributes
@@ -107,15 +107,14 @@ $("#template_edit").on("click", function () {
     }
     var id = ids[0];
     var data = $("a#template_id_" + id).attr("data-whatever");
-    var modal = $('#e-dialog-user');
-    $('#e-dialog-user').modal({
+    var modal = $('#e-dialog-template');
+    $('#e-dialog-template').modal({
         keyboard: true
     });
     initForm(modal, JSON.parse(data));
 });
-$('#e-dialog-user').find('.modal-footer #saveUser').click(function () {
-    var password = $("#e_password").val();
-    var data = $("#e-menu-role-form").serialize();
+$('#e-dialog-template').find('.modal-footer #saveTemplate').click(function () {
+    var data = $("#e-template-form").serialize();
     var dts = data.split("&");
     var str = "";
     var list = [];
@@ -128,6 +127,7 @@ $('#e-dialog-user').find('.modal-footer #saveUser').click(function () {
         }
     }
     data = list.join("&");
+    console.log("template date:", data)
     $.ajax({
         type: "get",
         url: "/template/save",
@@ -146,7 +146,7 @@ $('#e-dialog-user').find('.modal-footer #saveUser').click(function () {
                 new Noty({
                     type: 'error',
                     layout: 'topCenter',
-                    text: result.msg || '保存用户失败',
+                    text: result.msg || '保存模板失败',
                     timeout: '2000'
                 }).show();
             } else {
@@ -156,7 +156,7 @@ $('#e-dialog-user').find('.modal-footer #saveUser').click(function () {
                     text: result.msg || '保存成功',
                     timeout: '2000'
                 }).show();
-                $('#e-dialog-user').modal('hide');
+                $('#e-dialog-template').modal('hide');
                 datatable.ajax.url('/template/load?&s_area=' + $("#s_area").val()).load();
             }
         }
