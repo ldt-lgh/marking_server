@@ -36,8 +36,10 @@ router.post('/template', function(req, res) {
     const t = req.body;
     console.log(t)
     bt.create(t).then(tm=>{
-        console.log(tm);
-        res.end('succ');});
+        console.log(tm.id);
+        res_json = {status:'ok', data:[tm.id]}
+        res.json(res_json);
+        });
 });
 /**
  * 获取模板列表
@@ -59,7 +61,7 @@ router.get('/template/:area', function(req, res) {
     }).then(result=>{
         res_json = {status:'ok', data:result}
         res.json(res_json);
-    }).catch(e=>res.json({status:"error", message:e }))
+    }).catch(e=>res.json({status:"error", data:[], message:e }))
     
 });
 /**
@@ -72,17 +74,17 @@ router.get('/template/:area', function(req, res) {
  * @apiGroup marking
  * @apiVersion 1.0.0
  */
-router.get('/template/:templateID', function(req, res) {
+router.get('/template/:area/:templateID', function(req, res) {
     console.log(req.params);
     bt.findOne({
         raw:true,
         attributes:['id', 'area', 'template_style', 'template_pos', 'start_time','end_time','status'],
         order:['status'],
-        where:{'id':[req.params.templateID]}
+        where:{'id':[req.params.templateID], 'area':req.params.area}
     }).then(result=>{
         res_json = {status:'ok', data:result}
         res.json(res_json);
-    }).catch(e=>res.json({status:"error", message:e }))
+    }).catch(e=>res.json({status:"error", data:[], message:e }))
     
 });
 /**

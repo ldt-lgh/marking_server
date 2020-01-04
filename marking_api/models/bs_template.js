@@ -11,12 +11,12 @@ module.exports = function(sequelize, DataTypes) {
     area: {
       type: DataTypes.STRING(255),
       allowNull: false,
-      defaultValue: '0'
+      defaultValue: ''
     },
     template_style: {
       type: DataTypes.STRING(500),
       allowNull: false,
-      defaultValue: '0'
+      defaultValue: ''
     },
     template_pos:{
       type: DataTypes.INTEGER(11),
@@ -33,7 +33,7 @@ module.exports = function(sequelize, DataTypes) {
     status:{
       type: DataTypes.INTEGER(4),
       allowNull: false,
-      defaultValue: '0'
+      defaultValue: 0
     },
     creator_id:{
       type: DataTypes.INTEGER(11),
