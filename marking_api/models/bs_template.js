@@ -1,12 +1,12 @@
 /* jshint indent: 2 */
-
+const moment = require('moment');
 module.exports = function(sequelize, DataTypes) {
   return sequelize.define('bs_template', {
     id: {
-      type: DataTypes.INTEGER(11),
+      type: DataTypes.STRING(20),
       allowNull: false,
       primaryKey: true,
-      autoIncrement:true
+      
     },
     area: {
       type: DataTypes.STRING(255),
@@ -24,11 +24,17 @@ module.exports = function(sequelize, DataTypes) {
     },
     start_time: {
       type: DataTypes.DATE,
-      allowNull: true
+      allowNull: true,
+      get(){
+        return moment(this.getDataValue('start_time')).format('YYYY-MM-DD HH:mm:ss');
+    }
     },
     end_time: {
       type: DataTypes.DATE,
-      allowNull: true
+      allowNull: true,
+      get(){
+        return moment(this.getDataValue('end_time')).format('YYYY-MM-DD HH:mm:ss');
+    }
     },
     status:{
       type: DataTypes.INTEGER(4),
