@@ -23,7 +23,7 @@ module.exports = function(sequelize, DataTypes) {
       allowNull: false
     },
     start_time: {
-      type: DataTypes.DATE,
+      type:DataTypes.DATE,
       allowNull: true,
       get(){
         return moment(this.getDataValue('start_time')).format('YYYY-MM-DD HH:mm:ss');
@@ -60,7 +60,8 @@ module.exports = function(sequelize, DataTypes) {
     }
   },
   {
-    timestamps:false,
+    timestamps:true,
+    underscored: true,
     tableName: 'bs_template'
   });
 };
