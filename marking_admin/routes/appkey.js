@@ -59,6 +59,7 @@ router.get('/load', async(req, res, next) => {
                 id: result[i].id,
                 area: result[i].area,
                 appkey: result[i].appkey,
+                secretkey:result[i].secret_key,
                 created_at: result[i].create_time ? moment(result[i].create_time).format("YYYY-MM-DD HH:mm:ss") : "",
                 modified_at: result[i].update_time!= "0000-00-00 00:00:00" ? moment(result[i].update_time).format("YYYY-MM-DD HH:mm:ss") : "",
             });
@@ -81,6 +82,7 @@ router.get('/save', async(req, res, next) => {
         var e_id = req.query.e_id;
         var e_area= req.query.e_area;
         var e_appkey= req.query.e_appkey;
+        var e_secretkey= req.query.e_secretkey;
         if (e_area== "" || e_area.trim() == "") {
             result.msg = "地市名称不能为空";
         }       if (result.msg != "") {
@@ -97,12 +99,12 @@ router.get('/save', async(req, res, next) => {
                     return;
                 }
 
-                sql = "update bs_appkey set area=?,appkey=?, modified_id=?, modified_at=?";
-                var params = [e_area, e_appkey,  user.id, new Date()];
+                sql = "update bs_appkey set area=?,appkey=?,secret_key=?, modified_id=?, modified_at=?";
+                var params = [e_area, e_appkey, e_secretkey, user.id, new Date()];
                 sql = sql + "where id=?";
                 params.push(e_id);
                 ret = await mysql.query(sql, params);
-                await common.saveOperateLog(req, "更新模板：" + e_name + ";ID: " + e_id);
+                await common.saveOperateLog(req, "更新地市appkey：" + e_area );
             } else {
 
                 // 判断是否有新增权限
@@ -117,10 +119,10 @@ router.get('/save', async(req, res, next) => {
                 var users = await mysql.query(sql, e_id);
                 if (users.length > 0) {
                     result.error = 1;
-                    result.msg = "appkeyy已经存在！";
+                    result.msg = "appkey已经存在！";
                 } else {
-                    sql = "insert bs_appkey(area, appkey,creator_id) values (?,?,?)";
-                    ret = await mysql.query(sql, [e_area, e_appkey,  user.id]);
+                    sql = "insert bs_appkey(area, appkey,secret_key,creator_id) values (?,?,?,?)";
+                    ret = await mysql.query(sql, [e_area, e_appkey, e_secretkey, user.id]);
                     await common.saveOperateLog(req, "新增appkey：" + e_area);
                 }
             }

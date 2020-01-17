@@ -85,6 +85,7 @@ app.use(function checkCity(req, res, next) {
 
 var port = process.env.PORT || 8080; // set our port
 function sign(json_data, secret_key) {
+    json_tmp =Object.assign({}, json_data);
     json_data['secret_key'] = secret_key;
     var crypto = require('crypto');
     var md5 = crypto.createHash("md5");
@@ -93,8 +94,8 @@ function sign(json_data, secret_key) {
     var str = md5.digest('hex');
     //var s = str.toUpperCase(); //32位大写
 
-    json_data['sign'] = str;
-    return json_data;
+    json_tmp['sign'] = str;
+    return json_tmp;
     console.log(str);
 
 }

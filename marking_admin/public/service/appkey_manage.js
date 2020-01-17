@@ -17,6 +17,7 @@ var datatable = $('#users').DataTable({
         },
         {"data": "area"},
         {"data":"appkey"},
+        {"data":"secretkey"},
         {"data": "created_at"},
         {"data": "modified_at"},
         {
@@ -69,6 +70,7 @@ var initForm = function (modal, data) {
         console.log(data)
         modal.find('.modal-body input#e_id').val(data.id);
         modal.find('.modal-body input#e_appkey').val(data.appkey);
+        modal.find('.modal-body input#e_secretkey').val(data.secretkey);
         modal.find('.modal-body input#e_area').val(data.area);
     } else {
         modal.find('.modal-body form input').val("");
@@ -220,3 +222,38 @@ var removeData = function (id) {
         ]
     }).show();
 };
+function uuid() {
+    var s = [];
+    var hexDigits = "0123456789abcdef";
+    for (var i = 0; i < 36; i++) {
+        s[i] = hexDigits.substr(Math.floor(Math.random() * 0x10), 1);
+    }
+    s[14] = "4";  // bits 12-15 of the time_hi_and_version field to 0010
+    s[19] = hexDigits.substr((s[19] & 0x3) | 0x8, 1);  // bits 6-7 of the clock_seq_hi_and_reserved to 01
+    s[8] = s[13] = s[18] = s[23] = "-";
+ 
+    var uuid = s.join("");
+    return uuid;
+}
+function guid() {
+    function S4() {
+       return (((1+Math.random())*0x10000)|0).toString(16).substring(1);
+    }
+    return (S4()+S4()+"-"+S4()+"-"+S4()+"-"+S4()+"-"+S4()+S4()+S4());
+}
+function randomString(length) {
+    const chars = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    let result = '';
+    for (let i = length; i > 0; --i) {
+      result += chars[Math.floor(Math.random() * chars.length)];
+    }
+    return result;
+  }
+$('#e-dialog-user').find('.modal-footer #keyGen').click(function () {
+    
+        var modal = $('#e-dialog-user');
+        var appkey = uuid();
+        var sec = randomString(32);
+        modal.find('.modal-body input#e_appkey').val(appkey);
+        modal.find('.modal-body input#e_secretkey').val(sec);
+});

@@ -12,11 +12,11 @@
                     <div class="row">
                         <div class="col-md-3 col-sm-4">
                             <span>地市：</span>
-                            <input type="text" class=".col-xs-4" id="s_area" placeholder="请输入地市名称"/>
+                            <input type="text" class=".col-xs-4" id="s_area" placeholder="请输入地市名称" />
                         </div>
                         <div class="col-md-3 col-sm-4">
                             <a class="btn btn-default btn-sm" href="javascript:void(0)" id="appkey-search"><i
-                                        class="glyphicon glyphicon-search"></i>
+                                    class="glyphicon glyphicon-search"></i>
                                 查询</a>
                         </div>
                     </div>
@@ -31,22 +31,22 @@
                     <b>工具栏： </b>
                     <caption>
                         <button type="button" class="btn btn-default" id="appkey_refresh"><i
-                                    class="fa fa-refresh icon-white"></i> 刷新
+                                class="fa fa-refresh icon-white"></i> 刷新
                         </button>
                         <% if(permissions.add) { %>
                         <button type="button" class="btn btn-success" id="appkey_add" data-toggle="modal"
-                                data-target="#e-dialog-user" data-whatever=""><i
-                                    class="glyphicon glyphicon-edit icon-white"></i> 新增
+                            data-target="#e-dialog-user" data-whatever=""><i
+                                class="glyphicon glyphicon-edit icon-white"></i> 新增
                         </button>
                         <%}%>
                         <% if(permissions.update) { %>
-                        <button type="button" class="btn btn-info" id="appkey_edit" data-toggle="modal" id="appkey-edit"><i
-                                    class="fa fa-edit icon-white"></i> 编辑
+                        <button type="button" class="btn btn-info" id="appkey_edit" data-toggle="modal"
+                            id="appkey-edit"><i class="fa fa-edit icon-white"></i> 编辑
                         </button>
                         <%}%>
                         <% if(permissions.delete) { %>
                         <button type="button" class="btn btn-danger" id="appkey_batch_remove"><i
-                                    class="fa fa-remove icon-white"></i> 删除
+                                class="fa fa-remove icon-white"></i> 删除
                         </button>
                         <%}%>
                         <button type="button" class="btn btn-info" id="appkey_find" onclick="optionUserData(this);"><i
@@ -65,6 +65,7 @@
                             </th>
                             <th>地市名称</th>
                             <th>appkey</th>
+                            <th>secretkey</th>
                             <th>创建时间</th>
                             <th>更新时间</th>
                             <th>操作</th>
@@ -110,16 +111,25 @@
                         </div>
                         </div>
                         <div class="form-group" id="form-password">
+
                             <label for="appkey" class="col-sm-2 control-label">appkey</label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control" id="e_appkey" name="e_appkey"
+                                       placeholder="请输入appkey" readonly="readonly">
+                            </div>
+                        </div>
+                            <div class="form-group" id="form-secretkey">
+                            <label for="appkey" class="col-sm-2 control-label">secretkey</label>
                             <div class="col-sm-10">
-                                <input type="appkey" class="form-control" id="e_appkey" name="e_appkey"
-                                       placeholder="请输入appkey">
+                                <input type="text" class="form-control" id="e_secretkey" name="e_secretkey"
+                                       placeholder="请输入secretkey" readonly="readonly">
                             </div>
                         </div>
                     </div>
                 </form>
             </div>
             <div class="modal-footer">
+                <button type="button" class="btn btn-default " id='keyGen'>生成appkey</button>
                 <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
                 <button type="button" class="btn btn-primary" id="saveUser">保存</button>
             </div>
@@ -128,10 +138,10 @@
 </div>
 <% include partials/iframe_footer %>
 
-<!-注入权限参数给datatable 中操作按钮使用->
-<script type="application/javascript">
-    var permissions = JSON.parse('<%- JSON.stringify(permissions) %>');
-</script>
+                        <!-注入权限参数给datatable 中操作按钮使用->
+                            <script type="application/javascript">
+                                var permissions = JSON.parse('<%- JSON.stringify(permissions) %>');
+                            </script>
 
-<script src="/javascripts/md5.js"></script>
-<script src="/service/appkey_manage.js"></script>
+                            <script src="/javascripts/md5.js"></script>
+                            <script src="/service/appkey_manage.js"></script>
