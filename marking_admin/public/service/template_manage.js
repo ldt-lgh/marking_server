@@ -8,30 +8,54 @@ var datatable = $('#users').DataTable({
     'ajax': '/template/load',
     'autoWidth': true,
     "ordering": false,
-    "columns": [
-        {
+    "columns": [{
             "data": "id",
             "render": function (data, type, full, meta) {
                 return '<input type="checkbox" name="template_id_' + data + '" value="' + data + '">';
             }
         },
-        {"data": "area"},
-        {"data": "template_style"},
-        {"data": "template_pos"},
-        {"data": "start_time"},
-        {"data": "end_time"},
-        {"data": "status"},
-        {"data": "created_at"},
-        {"data": "modified_at"},
+        {
+            "data": "area"
+        },
+        {
+            "data": "template_style"
+        },
+        {
+            "data": "template_pos",
+            "class": "text-center",
+            "render": function (data, type, row) {
+                if (data == 1) {
+                    return "上";
+                } else if (data == 2) {
+                    return "下";
+                }
+                return "";
+            }
+        },
+        {
+            "data": "start_time"
+        },
+        {
+            "data": "end_time"
+        },
+        {
+            "data": "status"
+        },
+        {
+            "data": "created_at"
+        },
+        {
+            "data": "modified_at"
+        },
         {
             "data": "is",
             render: function (data, type, row, meta) {
                 // 判断菜单权限
                 var operate = "";
-                if(permissions.update) {
+                if (permissions.update) {
                     operate = operate + '<a class="" data-toggle="modal" id="template_id_' + row.id + '" data-target="#e-dialog-template" data-whatever=\'' + JSON.stringify(row) + '\'><i class="fa fa-edit icon-white"></i> 编辑</a>&nbsp;&nbsp;';
                 }
-                if(permissions.delete) {
+                if (permissions.delete) {
                     operate = operate + '<a name="' + row.id + '" onclick="removeData(' + row.id + ')" class="template_remove"><i class="fa fa-remove icon-white"></i> 删除</a>';
                 }
                 return operate;
@@ -73,7 +97,8 @@ var initForm = function (modal, data) {
         console.log(data)
         modal.find('.modal-body input#e_id').val(data.id);
         modal.find('.modal-body textarea#e_template_style').val(data.template_style);
-        modal.find('.modal-body input#e_template_pos').val(data.template_pos);
+        //modal.find('.modal-body select#s_template_pos').val(data.template_pos);
+        modal.find('.modal-body select#s_template_pos').selectpicker('val', data.template_pos);
         modal.find('.modal-body input#e_area').val(data.area);
         modal.find('.modal-body input#e_start_time').val(data.start_time);
         modal.find('.modal-body input#e_end_time').val(data.end_time);
@@ -87,7 +112,7 @@ var initForm = function (modal, data) {
 //编辑
 $('#e-dialog-template').on('show.bs.modal', function (event) {
     var modal = $(this);
-    var button = $(event.relatedTarget);// Button that triggered the modal
+    var button = $(event.relatedTarget); // Button that triggered the modal
     var data = button.data('whatever'); // Extract info from data-* attributes
     // If necessary, you could initiate an AJAX request here (and then do the updating in a callback).
     // Update the modal's content. We'll use jQuery here, but you could use a data binding library or other methods instead.
@@ -118,16 +143,16 @@ $('#e-dialog-template').find('.modal-footer #saveTemplate').click(function () {
     var dts = data.split("&");
     var str = "";
     var list = [];
-    for (var i=0; i<dts.length; i++) {
+    for (var i = 0; i < dts.length; i++) {
         var dt = dts[i];
-        if(dt.indexOf("e_password")>-1 && (password != "" && password.trim() != "")) {
+        if (dt.indexOf("e_password") > -1 && (password != "" && password.trim() != "")) {
             list.push("e_password=" + hex_md5(password));
         } else {
             list.push(dt);
         }
     }
     data = list.join("&");
-    console.log("template date:", data)
+    console.log("template data:", data)
     $.ajax({
         type: "get",
         url: "/template/save",
@@ -167,7 +192,9 @@ var deleteUserData = function (ids) {
         type: "delete",
         url: "/template/delete",
         asyc: false,
-        data: {ids: ids},
+        data: {
+            ids: ids
+        },
         error: function (error) {
             new Noty({
                 type: 'error',
@@ -220,7 +247,10 @@ var removeData = function (id) {
             Noty.button('YES', 'btn btn-success', function () {
                 deleteUserData(id);
                 n.close();
-            }, {id: 'button1', 'data-status': 'ok'}),
+            }, {
+                id: 'button1',
+                'data-status': 'ok'
+            }),
 
             Noty.button('NO', 'btn btn-error btn-confirm', function () {
                 n.close();
