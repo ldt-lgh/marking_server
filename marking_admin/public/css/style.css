@@ -22,7 +22,8 @@ a {
 }
 
 .login-page {
-    background: url("/images/bg.jpg");
+    /* background: url("/images/bg.jpg"); */
+    
 }
 
 .login-logo a{
