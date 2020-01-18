@@ -88,7 +88,7 @@ router.get('/save', async(req, res, next) => {
         var e_template_pos= req.query.s_template_pos;
         var e_start_time = req.query.e_start_time;
         var e_end_time = req.query.e_end_time;
-        var e_status= req.query.e_status;
+        var e_status= req.query.s_status;
         log.info("hihi");
         log.info(e_area.trim())
         log.info("hihi1");

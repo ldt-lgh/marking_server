@@ -152,8 +152,12 @@
                         <div class="form-group" id="form-status">
                             <label for="template" class="col-sm-2 control-label">状态</label>
                             <div class="col-sm-10">
-                                <input type="text" class="form-control" id="e_status" name="e_status"
-                                       placeholder="设置当前状态">
+                                  <select class="selectpicker"  id="s_status" name="s_status">
+                                    <option value="1">待审核</option>
+                                    <option value="2">审核通过</option>
+                                    <option value="3">审核不通过</option>
+                                  </select>
+
                             </div>
                         </div>
                     </div>

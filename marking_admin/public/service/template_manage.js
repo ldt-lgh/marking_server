@@ -39,7 +39,19 @@ var datatable = $('#users').DataTable({
             "data": "end_time"
         },
         {
-            "data": "status"
+            "data": "status",
+            "class": "text-center",
+            "render": function (data, type, row) {
+                if (data == 1) {
+                    return "待审核";
+                } else if (data == 2) {
+                    return "审核通过";
+                }
+                else if(data==3){
+                    return '审核不通过';
+                }
+                return "";
+            }
         },
         {
             "data": "created_at"
@@ -102,7 +114,8 @@ var initForm = function (modal, data) {
         modal.find('.modal-body input#e_area').val(data.area);
         modal.find('.modal-body input#e_start_time').val(data.start_time);
         modal.find('.modal-body input#e_end_time').val(data.end_time);
-        modal.find('.modal-body input#e_status').val(data.status);
+        modal.find('.modal-body select#s_status').selectpicker('val', data.status);
+        //modal.find('.modal-body input#e_status').val(data.status);
     } else {
         modal.find('.modal-body form input').val("");
         modal.find('.modal-body form select').val("0");
