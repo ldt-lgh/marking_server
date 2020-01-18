@@ -97,7 +97,7 @@ var datatable = $('#users').DataTable({
 });
 
 //搜索
-$("#user-search").on("click", function () {
+$("#template-search").on("click", function () {
     datatable.ajax.url('/template/load?s_area=' + $("#s_area").val()).load();
 });
 

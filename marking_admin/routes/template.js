@@ -29,8 +29,8 @@ router.get('/load', async(req, res, next) => {
         var s_area= req.query.s_area;
 
         if (s_area) {
-            sqlcount = sqlcount + " and name like '%" + s_area.trim() + "%'";
-            sql = sql + " and name like '%" + s_area.trim() + "%'";
+            sqlcount = sqlcount + " and area like '%" + s_area.trim() + "%'";
+            sql = sql + " and area like '%" + s_area.trim() + "%'";
         }
         var start = req.query.start;
         var length = req.query.length;
