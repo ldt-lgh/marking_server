@@ -60,8 +60,8 @@ router.get('/load', async(req, res, next) => {
                 area: result[i].area,
                 appkey: result[i].appkey,
                 secretkey:result[i].secret_key,
-                created_at: result[i].create_time ? moment(result[i].create_time).format("YYYY-MM-DD HH:mm:ss") : "",
-                modified_at: result[i].update_time!= "0000-00-00 00:00:00" ? moment(result[i].update_time).format("YYYY-MM-DD HH:mm:ss") : "",
+                create_at: result[i].create_at ? moment(result[i].create_at).format("YYYY-MM-DD HH:mm:ss") : "",
+                modified_at: result[i].modified_at!= "0000-00-00 00:00:00" ? moment(result[i].modified_at).format("YYYY-MM-DD HH:mm:ss") : "",
             });
         }
         res.status(200).json(backResult);

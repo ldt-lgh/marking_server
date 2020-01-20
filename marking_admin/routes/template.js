@@ -63,8 +63,8 @@ router.get('/load', async(req, res, next) => {
                 start_time:result[i].start_time ? moment(result[i].start_time).format("YYYY-MM-DD HH:mm:ss") : "",
                 end_time:result[i].end_time ? moment(result[i].end_time).format("YYYY-MM-DD HH:mm:ss") : "",
                 status:result[i].status,
-                created_at: result[i].create_time ? moment(result[i].create_time).format("YYYY-MM-DD HH:mm:ss") : "",
-                modified_at: result[i].update_time!= "0000-00-00 00:00:00" ? moment(result[i].update_time).format("YYYY-MM-DD HH:mm:ss") : "",
+                created_at: result[i].create_at ? moment(result[i].create_at).format("YYYY-MM-DD HH:mm:ss") : "",
+                modified_at: result[i].modified_time!= "0000-00-00 00:00:00" ? moment(result[i].modified_time).format("YYYY-MM-DD HH:mm:ss") : "",
             });
         }
         res.status(200).json(backResult);
@@ -89,9 +89,6 @@ router.get('/save', async(req, res, next) => {
         var e_start_time = req.query.e_start_time;
         var e_end_time = req.query.e_end_time;
         var e_status= req.query.s_status;
-        log.info("hihi");
-        log.info(e_area.trim())
-        log.info("hihi1");
         if (e_area== "" || e_area.trim() == "") {
             result.msg = "地市名称不能为空";
         }       if (result.msg != "") {

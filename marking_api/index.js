@@ -49,15 +49,30 @@ app.use(function checkAppKey(req, res, next) {
     })
 });
 app.use(function checkCity(req, res, next) {
-    if (req.method != 'post') {
-        next();
-
+    let area = '';
+    console.log(req.url);
+    console.log(req.query);
+    console.log(req.body);
+    console.log(req.method, req.params.area);
+    if (req.method == 'GET'){ 
+        console.log(req.url.split('/')); 
+        area = req.url.split('/')[3];
+               console.log(area);
+               
+        area= decodeURI(area) ;
+        console.log(area);
     }
-    const t = req.body;
-    console.log("t", t)
-    area = t.area;
-    console.log(area);
-    ba.findOne({
+    else if (req.method == 'POST') {
+        const t = req.body;
+        console.log("t", t)
+        console.log(area);
+area = t.area;
+    }
+    else{
+        next();
+        return;
+    }
+    bc.findOne({
         raw: true,
         attributes: ['id'],
         where: {
@@ -66,7 +81,7 @@ app.use(function checkCity(req, res, next) {
     }).then(result => {
         console.log(result)
         if (result == null) {
-            console.log("no city code", t.area)
+            console.log("no city code", area)
             res_data = {
                 status: "error",
                 data: [],
@@ -77,7 +92,7 @@ app.use(function checkCity(req, res, next) {
             return;
         } else {
             req.cityID = result.id;
-            console.log("get city code:", t.area, req.cityID);
+            console.log("get city code:", area, req.cityID);
             next();
         }
     })
@@ -194,28 +209,31 @@ router.get('/template/:area/:templateID', function (req, res) {
     console.log(req.params);
     secret_key = req.secret_key;
 
+    cityID = req.cityID;
     bt.findOne({
         raw: true,
-        attributes: ['id', 'area', 'template_style', 'template_pos', 'start_time', 'end_time', 'status'].sort(),
+        attributes: ['id', 'area', 'template_style', 'template_pos',  [Sequelize.fn('date_format', Sequelize.col('start_time'), '%Y-%m-%d %H:%i:%s'), 'start_time'],
+        [Sequelize.fn('date_format', Sequelize.col('end_time'), '%Y-%m-%d %H:%i:%s'), 'end_time'], 'status'],
         order: ['status'],
         where: {
-            'id': [req.params.templateID],
+            'id': [cityID+req.params.templateID],
             'area': req.params.area
         }
     }).then(result => {
-        let d = result.join("&");
-        console.log(d);
         res_json = {
             status: 'ok',
-            data: result
+            data: [result]
         }
-        sign_data = sign(res_json, secret_key)
-        res.json(sign_json);
-    }).catch(e => res.json(sign({
+        sign_data = sign(res_json, secret_key);
+        console.log(sign_data);
+        res.json(sign_data);
+    }).catch(e => {
+        console.log(e);
+        res.json(sign({
         status: "error",
         data: [],
         message: e.name
-    }, secret_key)))
+    }, secret_key))})
 });
 
 /**
