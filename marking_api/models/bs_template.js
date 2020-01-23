@@ -8,6 +8,12 @@ module.exports = function(sequelize, DataTypes) {
       primaryKey: true,
       
     },
+    app_id: {
+      type: DataTypes.STRING(20),
+      allowNull: false,
+      primaryKey: true,
+      
+    },
     area: {
       type: DataTypes.STRING(255),
       allowNull: false,
@@ -60,8 +66,7 @@ module.exports = function(sequelize, DataTypes) {
     }
   },
   {
-    timestamps:true,
-    underscored: true,
+    timestamps:false,
     tableName: 'bs_template'
   });
 };

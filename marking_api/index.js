@@ -9,6 +9,7 @@ console.log(typeof (db));
 var bt = require('./models/bs_template')(db, Sequelize);
 var ba = require('./models/bs_appkey')(db, Sequelize);
 var bc = require('./models/bs_city')(db, Sequelize);
+var util = require('util');
 // 给app配置bodyParser中间件
 // 通过如下配置再路由种处理request时，可以直接获得post请求的body部分
 app.use(bodyParser.urlencoded({
@@ -24,7 +25,7 @@ app.use(function checkAppKey(req, res, next) {
     let secret_key = '';
     ba.findOne({
         raw: true,
-        attributes: ['secret_key'],
+        attributes: ['id','secret_key'],
         where: {
             'appkey': appkey
         }
@@ -42,6 +43,7 @@ app.use(function checkAppKey(req, res, next) {
             return;
         } else {
             req.secret_key = result.secret_key;
+            req.app_id = result.id;
             console.log(req.headers);
             console.log("go to next")
             next();
@@ -114,6 +116,23 @@ function sign(json_data, secret_key) {
     console.log(str);
 
 }
+function updateOrCreate (model, where, newItem) {
+    // First try to find the record
+    return model
+    .findOne({where: where})
+    .then(function (foundItem) {
+        if (!foundItem) {
+            // Item not found, create a new one
+            return model
+                .create(newItem)
+                .then(function (item) { return  {item: item, created: true}; })
+        }
+         // Found an item, update it
+        return model
+            .update(newItem, {where: where})
+            .then(function (item) { return {item: item, created: false} }) ;
+    })
+}
 // API路由配置
 // =============================================================================
 var router = express.Router(); // 获得express router对象
@@ -133,21 +152,26 @@ var router = express.Router(); // 获得express router对象
 router.post('/template', function (req, res) {
     const t = req.body;
     secret_key = req.secret_key;
-    cityID = req.cityID;
-    t.id = cityID + t.id
-    bt.create(t).then(tm => {
-        console.log(tm.id);
+    t.app_id = req.app_id
+    t.status=1;
+    // bt.create(t).then(tm => {
+    updateOrCreate(bt, {id:t.id,app_id:t.app_id}, t).then(result=>{
+        console.log(result.item);
+        console.log(result);
+
         res_json = {
             status: 'ok',
-            data: [tm.id]
+            data: [t.id]
         }
         sign_data = sign(res_json, secret_key);
         res.json(sign_data);
-    }).catch(e => res.json(sign({
+    }).catch(e => {
+        console.log(e);
+        res.json(sign({
         status: "error",
         data: [],
         message: e.name
-    }, secret_key)))
+    }, secret_key))})
 })
 /**
  * 获取模板列表
@@ -171,7 +195,8 @@ router.get('/template/:area', function (req, res, next) {
         ],
         order: ['status'],
         where: {
-            'area': req.params.area
+            //'area': req.params.area
+            app_id:req.app_id
         }
     }).then(result => {
         //let d = result.join("&");
@@ -216,8 +241,10 @@ router.get('/template/:area/:templateID', function (req, res) {
         [Sequelize.fn('date_format', Sequelize.col('end_time'), '%Y-%m-%d %H:%i:%s'), 'end_time'], 'status'],
         order: ['status'],
         where: {
-            'id': [cityID+req.params.templateID],
-            'area': req.params.area
+            //'id': [cityID+req.params.templateID],
+            'id':req.params.templateID,
+            'app_id':req.app_id
+            //'area': req.params.area
         }
     }).then(result => {
         res_json = {
