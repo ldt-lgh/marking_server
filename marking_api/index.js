@@ -195,8 +195,8 @@ router.get('/template/:area', function (req, res, next) {
         ],
         order: ['status'],
         where: {
-            //'area': req.params.area
-            app_id:req.app_id
+            'area': req.params.area
+            // app_id:req.app_id
         }
     }).then(result => {
         //let d = result.join("&");
@@ -243,8 +243,8 @@ router.get('/template/:area/:templateID', function (req, res) {
         where: {
             //'id': [cityID+req.params.templateID],
             'id':req.params.templateID,
-            'app_id':req.app_id
-            //'area': req.params.area
+            // 'app_id':req.app_id
+            'area': req.params.area
         }
     }).then(result => {
         res_json = {
