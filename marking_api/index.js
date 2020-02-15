@@ -190,7 +190,7 @@ router.get('/template/:area', function (req, res, next) {
     console.log('secret key', secret_key);
     bt.findAll({
         raw: true,
-        attributes: ['id', 'area,'uuid','template_style', 'template_pos', [Sequelize.fn('date_format', Sequelize.col('start_time'), '%Y-%m-%d %H:%i:%s'), 'start_time'],
+        attributes: ['id', 'area','uuid','template_style', 'template_pos', [Sequelize.fn('date_format', Sequelize.col('start_time'), '%Y-%m-%d %H:%i:%s'), 'start_time'],
             [Sequelize.fn('date_format', Sequelize.col('end_time'), '%Y-%m-%d %H:%i:%s'), 'end_time'], 'status'
         ],
         order: ['status'],
