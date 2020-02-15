@@ -155,13 +155,13 @@ router.post('/template', function (req, res) {
     t.app_id = req.app_id
     t.status=1;
     // bt.create(t).then(tm => {
-    updateOrCreate(bt, {id:t.id,app_id:t.app_id}, t).then(result=>{
+    updateOrCreate(bt, {uuid:t.uuid}, t).then(result=>{
         console.log(result.item);
         console.log(result);
 
         res_json = {
             status: 'ok',
-            data: [t.id]
+            data: [t.uuid]
         }
         sign_data = sign(res_json, secret_key);
         res.json(sign_data);
@@ -190,7 +190,7 @@ router.get('/template/:area', function (req, res, next) {
     console.log('secret key', secret_key);
     bt.findAll({
         raw: true,
-        attributes: ['id', 'area', 'template_style', 'template_pos', [Sequelize.fn('date_format', Sequelize.col('start_time'), '%Y-%m-%d %H:%i:%s'), 'start_time'],
+        attributes: ['id', 'area,'uuid','template_style', 'template_pos', [Sequelize.fn('date_format', Sequelize.col('start_time'), '%Y-%m-%d %H:%i:%s'), 'start_time'],
             [Sequelize.fn('date_format', Sequelize.col('end_time'), '%Y-%m-%d %H:%i:%s'), 'end_time'], 'status'
         ],
         order: ['status'],
@@ -242,7 +242,7 @@ router.get('/template/:area/:templateID', function (req, res) {
         order: ['status'],
         where: {
             //'id': [cityID+req.params.templateID],
-            'id':req.params.templateID,
+            'uuid':req.params.templateID,
             // 'app_id':req.app_id
             'area': req.params.area
         }
