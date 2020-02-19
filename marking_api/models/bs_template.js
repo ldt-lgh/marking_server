@@ -6,13 +6,12 @@ module.exports = function(sequelize, DataTypes) {
       type: DataTypes.STRING(20),
       allowNull: false,
       primaryKey: true,
-      
+      autoIncrement: true 
     },
-    app_id: {
-      type: DataTypes.STRING(20),
+    uuid: {
+      type: DataTypes.STRING(255),
       allowNull: false,
-      primaryKey: true,
-      
+      defaultValue: ''
     },
     area: {
       type: DataTypes.STRING(255),

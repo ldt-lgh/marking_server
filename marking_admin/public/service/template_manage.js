@@ -50,6 +50,9 @@ var datatable = $('#users').DataTable({
                 else if(data==3){
                     return '审核不通过';
                 }
+                else if(data=4){
+                    return '已发布';
+                }
                 return "";
             }
         },
