@@ -18,6 +18,11 @@ module.exports = function(sequelize, DataTypes) {
       allowNull: false,
       defaultValue: ''
     },
+    name: {
+      type: DataTypes.STRING(255),
+      allowNull: false,
+      defaultValue: ''
+    }
     template_style: {
       type: DataTypes.STRING(500),
       allowNull: false,
