@@ -1,9 +1,9 @@
 var Sequelize = require('sequelize')
 
-module.exports = new Sequelize('demo', 'vm','123456',{
-    'host':'192.168.1.20',
+module.exports = new Sequelize('marking', 'lgh','lghzlh',{
+    'host':'172.17.0.1',
     'dialect':'mysql',
-    'dateStrings' : true ,////解决时间格式
+    //'dateStrings' : true ,////解决时间格式
     timezone: '+08:00'
 });
 

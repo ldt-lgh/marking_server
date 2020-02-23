@@ -17,7 +17,7 @@ var appkey = require('./routes/appkey');
 var template = require('./routes/template');
 var login = require('./routes/login');
 var menus = require('./routes/menus');
-var verify = require('./routes/verify');
+//var verify = require('./routes/verify');
 var roles = require('./routes/roles');
 var user_role = require('./routes/user_role');
 var menu_role = require('./routes/menu_role');
@@ -76,7 +76,7 @@ app.use(function (req, res, next) {
 });
 
 app.use('/', routes);
-app.use('/verify', verify);
+//app.use('/verify', verify);
 app.use('/users', users);
 app.use('/appkey', appkey);
 app.use('/template', template);
