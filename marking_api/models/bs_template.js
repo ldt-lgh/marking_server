@@ -22,7 +22,7 @@ module.exports = function(sequelize, DataTypes) {
       type: DataTypes.STRING(255),
       allowNull: false,
       defaultValue: ''
-    }
+    },
     template_style: {
       type: DataTypes.STRING(500),
       allowNull: false,

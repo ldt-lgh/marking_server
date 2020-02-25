@@ -9,6 +9,7 @@ console.log(typeof (db));
 var bt = require('./models/bs_template')(db, Sequelize);
 var ba = require('./models/bs_appkey')(db, Sequelize);
 var bc = require('./models/bs_city')(db, Sequelize);
+var bconfirm = require('./models/bs_confirm')(db, Sequelize);
 var util = require('util');
 // 给app配置bodyParser中间件
 // 通过如下配置再路由种处理request时，可以直接获得post请求的body部分
@@ -44,6 +45,7 @@ app.use(function checkAppKey(req, res, next) {
         } else {
             req.secret_key = result.secret_key;
             req.app_id = result.id;
+            req.appkey = appkey
             console.log(req.headers);
             console.log("go to next")
             next();
@@ -94,6 +96,7 @@ area = t.area;
             return;
         } else {
             req.cityID = result.id;
+            req.area = area;
             console.log("get city code:", area, req.cityID);
             next();
         }
@@ -158,6 +161,40 @@ router.post('/template', function (req, res) {
     updateOrCreate(bt, {uuid:t.uuid}, t).then(result=>{
         console.log(result.item);
         console.log(result);
+
+        res_json = {
+            status: 'ok',
+            data: [t.uuid]
+        }
+        sign_data = sign(res_json, secret_key);
+        res.json(sign_data);
+    }).catch(e => {
+        console.log(e);
+        res.json(sign({
+        status: "error",
+        data: [],
+        message: e.name
+    }, secret_key))})
+})
+/**
+ * 确认模板
+ * @api {POST} /api/confirm/ 上传模板
+ * @apiDescription 客户端上传模板
+ * @apiName postTemplate
+ * @apiParam (path参数) {string} machine_name
+ * @apiParam (path参数) {string} uuid 
+ * @apiParam (path参数) {string} template_name
+ * @apiParam (path参数) {string} area
+ * @apiSampleRequest /api/confirm
+ * @apiGroup marking
+ * @apiVersion 1.0.0
+ */
+router.post('/confirm', function (req, res) {
+    const t = req.body;
+    secret_key = req.secret_key;
+    t.appkey= req.appkey
+    // bconfirm.create(t).then(tm => {
+    updateOrCreate(bconfirm, {appkey:t.appkey,uuid:t.uuid}, t).then(result=>{
 
         res_json = {
             status: 'ok',
