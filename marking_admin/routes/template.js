@@ -63,6 +63,7 @@ router.get('/load', async(req, res, next) => {
                 start_time:result[i].start_time ? moment(result[i].start_time).format("YYYY-MM-DD HH:mm:ss") : "",
                 end_time:result[i].end_time ? moment(result[i].end_time).format("YYYY-MM-DD HH:mm:ss") : "",
                 status:result[i].status,
+                uuid:result[i].uuid,
                 created_at: result[i].create_at ? moment(result[i].create_at).format("YYYY-MM-DD HH:mm:ss") : "",
                 modified_at: result[i].modified_time!= "0000-00-00 00:00:00" ? moment(result[i].modified_time).format("YYYY-MM-DD HH:mm:ss") : "",
             });
@@ -73,7 +74,19 @@ router.get('/load', async(req, res, next) => {
         res.status(500).json({error: 1, msg: '内部错误'});
     }
 });
-
+function uuid() {
+    var s = [];
+    var hexDigits = "0123456789abcdef";
+    for (var i = 0; i < 36; i++) {
+        s[i] = hexDigits.substr(Math.floor(Math.random() * 0x10), 1);
+    }
+    s[14] = "4";  // bits 12-15 of the time_hi_and_version field to 0010
+    s[19] = hexDigits.substr((s[19] & 0x3) | 0x8, 1);  // bits 6-7 of the clock_seq_hi_and_reserved to 01
+    s[8] = s[13] = s[18] = s[23] = "-";
+ 
+    var uuid = s.join("");
+    return uuid;
+}
 router.get('/save', async(req, res, next) => {
     var result = {
         error: 0,
@@ -89,49 +102,53 @@ router.get('/save', async(req, res, next) => {
         var e_start_time = req.query.e_start_time;
         var e_end_time = req.query.e_end_time;
         var e_status= req.query.s_status;
+        var e_uuid = req.query.uuid
         if (e_area== "" || e_area.trim() == "") {
             result.msg = "地市名称不能为空";
-        }       if (result.msg != "") {
+        }       
+        if (result.msg != "") {
             result.error = 1;
-        } else {
-            var ret, sql;
-            if (e_id) {
-                // 判断是否有更新权限
-                let updatePermission = await perm.permission(req, 'update');
-                if(!updatePermission) {
-                    result.error = 1;
-                    result.msg = "保存失败，没有更新权限，请联系管理员";
-                    res.status(200).json(result);
-                    return;
-                }
+        }
+        // } else {
+        //     var ret, sql;
+        //     if (e_id) {
+        //         // 判断是否有更新权限
+        //         let updatePermission = await perm.permission(req, 'update');
+        //         if(!updatePermission) {
+        //             result.error = 1;
+        //             result.msg = "保存失败，没有更新权限，请联系管理员";
+        //             res.status(200).json(result);
+        //             return;
+        //         }
 
-                sql = "update bs_template set area=?,template_style=?, template_pos=?,start_time=?, end_time=?, status=?, modified_id=?, modified_at=?";
-                var params = [e_area, e_template_style,e_template_pos, e_start_time, e_end_time, e_status, user.id, new Date()];
-                sql = sql + "where id=?";
-                params.push(e_id);
-                ret = await mysql.query(sql, params);
-                await common.saveOperateLog(req, "更新模板：" + e_area + ";ID: " + e_id);
-            } else {
-
+        //         sql = "update bs_template set area=?,template_style=?, template_pos=?,start_time=?, end_time=?, status=?, modified_id=?, modified_at=?";
+        //         var params = [e_area, e_template_style,e_template_pos, e_start_time, e_end_time, e_status, user.id, new Date()];
+        //         sql = sql + "where id=?";
+        //         params.push(e_id);
+        //         ret = await mysql.query(sql, params);
+        //         await common.saveOperateLog(req, "更新模板：" + e_area + ";ID: " + e_id);
+        //     } else {
+else{
+    uuid = uuid();
                 // 判断是否有新增权限
-                let addPermission = await perm.permission(req, 'add');
-                if(!addPermission) {
-                    result.error = 1;
-                    result.msg = "保存失败，没有新增权限，请联系管理员";
-                    res.status(200).json(result);
-                    return;
-                }
-                sql = "select * from bs_template where id=? and is_del=0";
-                var users = await mysql.query(sql, e_id);
+                // let addPermission = await perm.permission(req, 'add');
+                // if(!addPermission) {
+                //     result.error = 1;
+                //     result.msg = "保存失败，没有新增权限，请联系管理员";
+                //     res.status(200).json(result);
+                //     return;
+                // }
+                sql = "select * from bs_template where uuid=? and start_time=? and end_time=?";
+                var users = await mysql.query(sql, e_uuid, e_start_time, e_end_time);
                 if (users.length > 0) {
                     result.error = 1;
-                    result.msg = "用户名已经存在！";
+                    result.msg = "同时效模板已发布";
                 } else {
-                    sql = "insert bs_template(area, template,start_time,end_time,status,creator_id) values (?,?,?,?,?,?)";
-                    ret = await mysql.query(sql, [e_area, e_template_style,e_template_pos, e_start_time, e_end_time, e_status,  user.id]);
+                    sql = "insert bs_template(area, template,start_time,end_time,status,creator_id,uuid) values (?,?,?,?,?,?,?)";
+                    ret = await mysql.query(sql, [e_area, e_template_style,e_template_pos, e_start_time, e_end_time, e_status,  user.id, uuid]);
                     await common.saveOperateLog(req, "新增模板：" + e_area);
+                    e_uuid = uuid;
                 }
-            }
             log.info("save user ret: ", ret);
         }
         res.status(200).json(result);

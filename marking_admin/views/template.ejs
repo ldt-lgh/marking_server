@@ -33,22 +33,22 @@
                         <button type="button" class="btn btn-default" id="template_refresh"><i
                                     class="fa fa-refresh icon-white"></i> 刷新
                         </button>
-                        <% if(permissions.add) { %>
+                        <!-- <% if(permissions.add) { %>
                         <button type="button" class="btn btn-success" id="template_add" data-toggle="modal"
                                 data-target="#e-dialog-template" data-whatever=""><i
                                     class="glyphicon glyphicon-edit icon-white"></i> 新增
                         </button>
-                        <%}%>
+                        <%}%> -->
                         <% if(permissions.update) { %>
                         <button type="button" class="btn btn-info" id="template_edit" data-toggle="modal" ><i
-                                    class="fa fa-edit icon-white"></i> 编辑
+                                    class="fa fa-edit icon-white"></i> 发布 
                         </button>
                         <%}%>
-                        <% if(permissions.delete) { %>
+                        <!-- <% if(permissions.delete) { %>
                         <button type="button" class="btn btn-danger" id="template_batch_remove"><i
                                     class="fa fa-remove icon-white"></i> 删除
                         </button>
-                        <%}%>
+                        <%}%> -->
                         <!-- <button type="button" class="btn btn-info" id="template_find" onclick="optionUserData(this);"><i
                                     class="glyphicon glyphicon-zoom-in icon-white"></i> 详情
                         </button> -->
@@ -114,20 +114,20 @@
                             <label for="area" class="col-sm-2 control-label">地市</label>
                         <div class="col-sm-10">
  <input type="text" class="form-control" id="e_area" name="e_area"
-                                                          placeholder="请输入地市">
+                    readonly = "readonly" >                                     >
                         </div>
                         </div>
                         <div class="form-group" id="form-template">
                             <label for="template" class="col-sm-2 control-label">模板样式</label>
                             <div class="col-sm-10">
                                 <textarea class="form-control" rows="2" id="e_template_style" name="e_template_style"
-                                       placeholder="请设置template"></textarea><label id="template_password_desc"></label>
+                                       placeholder="请设置template" readonly = "readonly"></textarea><label id="template_password_desc"></label>
                             </div>
                         </div>
                         <div class="form-group" id="form-template">
                             <label for="template"  class="col-sm-2 control-label">模板位置</label>
                             <div class="col-sm-10">
-                                <select class="selectpicker"  id="s_template_pos" name="s_template_pos">
+                                <select class="selectpicker"  id="s_template_pos" name="s_template_pos" readonly = "readonly">
                                     <option value="1">上</option>
                                     <option value="2">下</option>
                                   </select>
@@ -152,11 +152,11 @@
                         <div class="form-group" id="form-status">
                             <label for="template" class="col-sm-2 control-label">状态</label>
                             <div class="col-sm-10">
-                                  <select class="selectpicker"  id="s_status" name="s_status">
+                                  <select class="selectpicker"  id="s_status" name="s_status" readonly = "readonly">
                                     <option value="1">待审核</option>
                                     <option value="2">审核通过</option>
                                     <option value="3">审核不通过</option>
-                                    <option value="4">已发布</option>
+                                    <option value="4" selected="selected">已发布</option>
                                   </select>
 
                             </div>
