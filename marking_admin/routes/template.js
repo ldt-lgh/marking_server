@@ -45,7 +45,7 @@ router.get('/load', async(req, res, next) => {
         draw = parseInt(draw) || 0;
         console.log("sqlcount:", sqlcount);
         var memuCount = await mysql.query(sqlcount);
-        sql = sql + " ORDER BY id DESC limit " + start + "," + length;
+        sql = sql + " ORDER BY id limit " + start + "," + length;
         console.log("sql:", sql);
         var result = await mysql.query(sql);
         var backResult = {
@@ -60,10 +60,11 @@ router.get('/load', async(req, res, next) => {
                 area: result[i].area,
                 template_style: result[i].template_style,
                 template_pos: result[i].template_pos,
-                start_time:result[i].start_time ? moment(result[i].start_time).format("YYYY-MM-DD HH:mm:ss") : "",
-                end_time:result[i].end_time ? moment(result[i].end_time).format("YYYY-MM-DD HH:mm:ss") : "",
+                start_time:result[i].start_time ? moment(result[i].start_time).format("YYYY-MM-DD"):"",
+                end_time:result[i].end_time ? moment(result[i].end_time).format("YYYY-MM-DD"):"",
                 status:result[i].status,
                 uuid:result[i].uuid,
+                name:result[i].name,
                 created_at: result[i].create_at ? moment(result[i].create_at).format("YYYY-MM-DD HH:mm:ss") : "",
                 modified_at: result[i].modified_time!= "0000-00-00 00:00:00" ? moment(result[i].modified_time).format("YYYY-MM-DD HH:mm:ss") : "",
             });
@@ -103,33 +104,60 @@ router.get('/save', async(req, res, next) => {
         var e_end_time = req.query.e_end_time;
         var e_status= req.query.s_status;
         var e_uuid = req.query.uuid
+        var e_name = req.query.e_name;
+        var e_opr = req.query.e_opr;
         if (e_area== "" || e_area.trim() == "") {
             result.msg = "地市名称不能为空";
         }       
         if (result.msg != "") {
             result.error = 1;
-        }
-        // } else {
-        //     var ret, sql;
-        //     if (e_id) {
-        //         // 判断是否有更新权限
-        //         let updatePermission = await perm.permission(req, 'update');
-        //         if(!updatePermission) {
-        //             result.error = 1;
-        //             result.msg = "保存失败，没有更新权限，请联系管理员";
-        //             res.status(200).json(result);
-        //             return;
-        //         }
-
-        //         sql = "update bs_template set area=?,template_style=?, template_pos=?,start_time=?, end_time=?, status=?, modified_id=?, modified_at=?";
-        //         var params = [e_area, e_template_style,e_template_pos, e_start_time, e_end_time, e_status, user.id, new Date()];
-        //         sql = sql + "where id=?";
-        //         params.push(e_id);
-        //         ret = await mysql.query(sql, params);
-        //         await common.saveOperateLog(req, "更新模板：" + e_area + ";ID: " + e_id);
-        //     } else {
-else{
-    uuid = uuid();
+        // }
+        } else {
+            var ret, sql;
+                sql = "update bs_template set area=?,template_style=?, template_pos=?,start_time=?, end_time=?, status=?, modified_id=?, modified_at=?";
+                var params = [e_area, e_template_style,e_template_pos, e_start_time, e_end_time, e_status, user.id, new Date()];
+                sql = sql + "where id=?";
+                params.push(e_id);
+                ret = await mysql.query(sql, params);
+                await common.saveOperateLog(req, "更新模板：" + e_area + ";ID: " + e_id);
+            } 
+            log.info("save user ret: ", ret);
+        
+        res.status(200).json(result);
+        
+    } catch (e) {
+        log.error("save template ret:", e);
+        result.error = 1;
+        result.msg = "保存失败，请联系管理员";
+        res.status(200).json(result);
+    }
+});
+router.get('/pub', async(req, res, next) => {
+    var result = {
+        error: 0,
+        msg: ""
+    };
+    try {
+        var user = req.session.user;
+        log.info("user save params: ", req.query);
+        var e_id = req.query.e_id;
+        var e_area= req.query.e_area;
+        var e_template_style= req.query.e_template_style;
+        var e_template_pos= req.query.s_template_pos;
+        var e_start_time = req.query.e_start_time;
+        var e_end_time = req.query.e_end_time;
+        var e_status= req.query.s_status;
+        var e_uuid = req.query.uuid
+        var e_name = req.query.e_name;
+        if (e_area== "" || e_area.trim() == "") {
+            result.msg = "地市名称不能为空";
+        }       
+        if (result.msg != "") {
+            result.error = 1;
+            return;
+        // }
+        } 
+    var s_uuid = uuid();
                 // 判断是否有新增权限
                 // let addPermission = await perm.permission(req, 'add');
                 // if(!addPermission) {
@@ -138,19 +166,19 @@ else{
                 //     res.status(200).json(result);
                 //     return;
                 // }
-                sql = "select * from bs_template where uuid=? and start_time=? and end_time=?";
-                var users = await mysql.query(sql, e_uuid, e_start_time, e_end_time);
+                sql = "select * from bs_template where id=? and start_time=? and end_time=?";
+                var users = await mysql.query(sql,[e_id, e_start_time, e_end_time]);
                 if (users.length > 0) {
                     result.error = 1;
                     result.msg = "同时效模板已发布";
                 } else {
-                    sql = "insert bs_template(area, template,start_time,end_time,status,creator_id,uuid) values (?,?,?,?,?,?,?)";
-                    ret = await mysql.query(sql, [e_area, e_template_style,e_template_pos, e_start_time, e_end_time, e_status,  user.id, uuid]);
+                    console.log("name:", e_name)
+                    sql = "insert bs_template(area, template_style,template_pos,start_time,end_time,status,creator_id,uuid,name) values (?,?,?,?,?,?,?,?,?)";
+                    ret = await mysql.query(sql, [e_area, e_template_style,e_template_pos, e_start_time, e_end_time, 4,  user.id, s_uuid,e_name]);
                     await common.saveOperateLog(req, "新增模板：" + e_area);
-                    e_uuid = uuid;
+                    e_uuid = s_uuid;
                 }
             log.info("save user ret: ", ret);
-        }
         res.status(200).json(result);
     } catch (e) {
         log.error("save template ret:", e);

@@ -15,6 +15,9 @@ var datatable = $('#users').DataTable({
             }
         },
         {
+            "data": "name"
+        },
+        {
             "data": "area"
         },
         {
@@ -50,7 +53,7 @@ var datatable = $('#users').DataTable({
                 else if(data==3){
                     return '审核不通过';
                 }
-                else if(data=4){
+                else if(data==4){
                     return '已发布';
                 }
                 return "";
@@ -68,11 +71,12 @@ var datatable = $('#users').DataTable({
                 // 判断菜单权限
                 var operate = "";
                 if (permissions.update) {
-                    operate = operate + '<a class="" data-toggle="modal" id="template_id_' + row.id + '" data-target="#e-dialog-template" data-whatever=\'' + JSON.stringify(row) + '\'><i class="fa fa-edit icon-white"></i> 编辑</a>&nbsp;&nbsp;';
+                    operate = operate + '<a class="" data-toggle="modal" id="template_id_' + row.id + '" data-target="#e-dialog-template" data-whatever=\'' + JSON.stringify(row) + '\'><i class="fa fa-edit icon-white"></i> 审核</a>&nbsp;&nbsp;';
+                    // operate = operate + '<a class="" data-toggle="modal" id="template_id_' + row.id + '" data-target="#e-dialog-template" data-whatever=\'' + JSON.stringify(row) + '\'><i class="fa fa-edit icon-white"></i> 发布</a>&nbsp;&nbsp;';
                 }
-                if (permissions.delete) {
-                    operate = operate + '<a name="' + row.id + '" onclick="removeData(' + row.id + ')" class="template_remove"><i class="fa fa-remove icon-white"></i> 删除</a>';
-                }
+                // if (permissions.delete) {
+                //     operate = operate + '<a name="' + row.id + '" onclick="removeData(' + row.id + ')" class="template_remove"><i class="fa fa-remove icon-white"></i> 删除</a>';
+                // }
                 return operate;
             }
         }
@@ -107,17 +111,29 @@ $("#template-search").on("click", function () {
 $("#template_refresh").on("click", function () {
     datatable.ajax.url('/template/load?s_area=' + $("#s_area").val()).load();
 });
-var initForm = function (modal, data) {
+var initForm = function (modal, data, opr = 0 ) {
     if (data) {
         console.log(data)
         modal.find('.modal-body input#e_id').val(data.id);
+        modal.find('.modal-body input#e_opr').val(opr);
         modal.find('.modal-body textarea#e_template_style').val(data.template_style);
         //modal.find('.modal-body select#s_template_pos').val(data.template_pos);
         modal.find('.modal-body select#s_template_pos').selectpicker('val', data.template_pos);
         modal.find('.modal-body input#e_area').val(data.area);
+        modal.find('.modal-body input#e_name').val(data.name);
+        console.log("status", data.status);
+        if (data.status<2)
+        {
+        modal.find('.modal-body input#e_name').attr("readonly","readonly");
+        modal.find('.modal-footer button#saveTemplate').text("审核");
+        modal.find('.modal-body select#s_status').selectpicker('val', 2);
+        }
+        else
+        {
+            modal.find('.modal-body select#s_status').selectpicker('val', data.status);
+        }
         modal.find('.modal-body input#e_start_time').val(data.start_time);
         modal.find('.modal-body input#e_end_time').val(data.end_time);
-        modal.find('.modal-body select#s_status').selectpicker('val', data.status);
         //modal.find('.modal-body input#e_status').val(data.status);
     } else {
         modal.find('.modal-body form input').val("");
@@ -136,6 +152,7 @@ $('#e-dialog-template').on('show.bs.modal', function (event) {
 });
 
 $("#template_edit").on("click", function () {
+    console.log("click edit")
     var ids = getIds();
     if (ids.length != 1) {
         new Noty({
@@ -148,22 +165,60 @@ $("#template_edit").on("click", function () {
     }
     var id = ids[0];
     var data = $("a#template_id_" + id).attr("data-whatever");
+    console.log("modal data:",data);
+    console.log("status:", data['status'])
+    jdata = JSON.parse(data)
+    console.log("modal data:",jdata);
+    if (jdata['status'] != 2 && jdata['status']<4)
+    {
+        new Noty({
+            type: 'warning',
+            layout: 'topCenter',
+            text: '模板审核通过后才能发布',
+            timeout: '2000'
+        }).show();
+        return;
+
+    }
+    else if (jdata['status'] == 4)
+    {
+        new Noty({
+            type: 'warning',
+            layout: 'topCenter',
+            text: '当前模板已发布',
+            timeout: '2000'
+        }).show();
+        return;
+
+    }
     var modal = $('#e-dialog-template');
     $('#e-dialog-template').modal({
         keyboard: true
     });
-    initForm(modal, JSON.parse(data));
+    initForm(modal, JSON.parse(data),1);
 });
 $('#e-dialog-template').find('.modal-footer #saveTemplate').click(function () {
     var data = $("#e-template-form").serialize();
+    console.log("dialog data:", data)
+    var url = "/template/pub";
     var dts = data.split("&");
+    console.log(dts);
     var str = "";
     var list = [];
     for (var i = 0; i < dts.length; i++) {
         var dt = dts[i];
         if (dt.indexOf("e_password") > -1 && (password != "" && password.trim() != "")) {
             list.push("e_password=" + hex_md5(password));
-        } else {
+        } 
+        else if(dt.indexOf("e_opr")>-1){
+            opr = dt.split("=")[1]
+            console.log("opr:", opr)
+            if (opr==0)
+            {
+                url = "template/save"
+            }
+        }
+        else {
             list.push(dt);
         }
     }
@@ -171,7 +226,7 @@ $('#e-dialog-template').find('.modal-footer #saveTemplate').click(function () {
     console.log("template data:", data)
     $.ajax({
         type: "get",
-        url: "/template/save",
+        url: url,
         asyc: false,
         data: data,
         error: function (error) {
