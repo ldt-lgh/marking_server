@@ -73,6 +73,7 @@ module.exports.setMenus = async (req, user_id) => {
 
         }
     }
+    console.log("menus2:", menus2);
     req.session.userRole = userRole;
     req.session.menus = menus;
     req.session.menus2 = menus2;

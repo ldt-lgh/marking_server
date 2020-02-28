@@ -7,36 +7,35 @@ const moment = require('moment');
 const common = require('../core/common');
 const stringUtils = require('../core/util/StringUtils');
 const _ = require('lodash');
-var UUID = require('uuid');
 /* GET template listing. */
 router.get('/', async (req, res, next) => {
     let user = req.session.user;
-    let menu_active = req.session.menu_active['/template'] || {};
+    let menu_active = req.session.menu_active['/confirm'] || {};
     let permissions = await perm.getPermissions(req);
-    res.render('template', {
+    res.render('confirm', {
         user: user,
         menus: req.session.menus,
         menu_active: menu_active,
         permissions: permissions,
-        title: '模板管理'
+        title: '已发布模板查询'
     });
 });
 router.get('/load', async(req, res, next) => {
     try {
-        var sqlcount = "select count(*) count from bs_template where is_del=0 ";
-        var sql = "select * from bs_template where is_del=0 ";
+        var sqlcount = "select count(*) count from bs_confirm where is_del=0 ";
+        var sql = "select * from bs_confirm where is_del=0 ";
 
         var s_area= req.query.s_area;
-        var se_status= req.query.se_status;
+        var se_tname= req.query.se_tname;
         console.log("s_area:", s_area);
-        console.log("s_status:", se_status);
+        console.log("se_tname", se_tname);
         if (s_area) {
             sqlcount = sqlcount + " and area like '%" + s_area.trim() + "%'";
             sql = sql + " and area like '%" + s_area.trim() + "%'";
         }
-        if (se_status && se_status!='0') {
-            sqlcount = sqlcount + " and status=  " + se_status.trim() ;
-            sql = sql + " and status=" + se_status.trim() ;
+        if (se_tname ) {
+            sqlcount = sqlcount + " and template_name like '%" + se_tname.trim() + "%'";
+            sql = sql + " and template_name like '%" + se_tname.trim() + "%'";
         }
         console.log(sqlcount);
         console.log(sql);
@@ -65,16 +64,12 @@ router.get('/load', async(req, res, next) => {
         for (var i in result) {
             backResult.data.push({
                 id: result[i].id,
-                area: result[i].area,
-                template_style: result[i].template_style,
-                template_pos: result[i].template_pos,
-                start_time:result[i].start_time ? moment(result[i].start_time).format("YYYY-MM-DD"):"",
-                end_time:result[i].end_time ? moment(result[i].end_time).format("YYYY-MM-DD"):"",
-                status:result[i].status,
-                uuid:result[i].uuid,
-                name:result[i].name,
-                created_at: result[i].create_at ? moment(result[i].create_at).format("YYYY-MM-DD HH:mm:ss") : "",
-                modified_at: result[i].modified_time!= "0000-00-00 00:00:00" ? moment(result[i].modified_time).format("YYYY-MM-DD HH:mm:ss") : "",
+                uuid: result[i].uuid,
+                template_name: result[i].template_name,
+                appkey: result[i].appkey,
+                machine_name:result[i].machine_name,
+                create_at:result[i].create_at? moment(result[i].create_at).format("YYYY-MM-DD HH:mm:ss"):"",
+                area:result[i].area,
             });
         }
         res.status(200).json(backResult);

@@ -5,7 +5,7 @@ var datatable = $('#users').DataTable({
     'lengthChange': true,
     'searching': false,
     'info': true,
-    'ajax': '/template/load',
+    'ajax': '/confirm/load',
     'autoWidth': true,
     "ordering": false,
     "columns": [{
@@ -15,67 +15,31 @@ var datatable = $('#users').DataTable({
             }
         },
         {
-            "data": "name"
+            "data": "template_name"
+        },
+        {
+            "data": "uuid"
         },
         {
             "data": "area"
         },
         {
-            "data": "template_style"
+            "data": "appkey"
         },
         {
-            "data": "template_pos",
+            "data": "machine_name",
             "class": "text-center",
-            "render": function (data, type, row) {
-                if (data == 1) {
-                    return "上";
-                } else if (data == 2) {
-                    return "下";
-                }
-                return "";
-            }
         },
         {
-            "data": "start_time"
-        },
-        {
-            "data": "end_time"
-        },
-        {
-            "data": "status",
-            "class": "text-center",
-            "render": function (data, type, row) {
-                if (data == 1) {
-                    return "待审核";
-                } else if (data == 2) {
-                    return "审核通过";
-                }
-                else if(data==3){
-                    return '审核不通过';
-                }
-                else if(data==4){
-                    return '已发布';
-                }
-                return "";
-            }
-        },
-        {
-            "data": "created_at"
-        },
-        {
-            "data": "modified_at"
+            "data": "create_at"
         },
         {
             "data": "is",
             render: function (data, type, row, meta) {
                 // 判断菜单权限
                 var operate = "";
-                if (permissions.update) {
-                    operate = operate + '<a class="" data-toggle="modal" id="template_id_' + row.id + '" data-target="#e-dialog-template" data-whatever=\'' + JSON.stringify(row) + '\'><i class="fa fa-edit icon-white"></i> 审核</a>&nbsp;&nbsp;';
-                    // operate = operate + '<a class="" data-toggle="modal" id="template_id_' + row.id + '" data-target="#e-dialog-template" data-whatever=\'' + JSON.stringify(row) + '\'><i class="fa fa-edit icon-white"></i> 发布</a>&nbsp;&nbsp;';
-                }
-                // if (permissions.delete) {
-                //     operate = operate + '<a name="' + row.id + '" onclick="removeData(' + row.id + ')" class="template_remove"><i class="fa fa-remove icon-white"></i> 删除</a>';
+                // if (permissions.update) {
+                //     operate = operate + '<a class="" data-toggle="modal" id="template_id_' + row.id + '" data-target="#e-dialog-template" data-whatever=\'' + JSON.stringify(row) + '\'><i class="fa fa-edit icon-white"></i> 核</a>&nbsp;&nbsp;';
                 // }
                 return operate;
             }
@@ -105,11 +69,11 @@ var datatable = $('#users').DataTable({
 
 //搜索
 $("#template-search").on("click", function () {
-    datatable.ajax.url('/template/load?s_area=' + $("#s_area").val()+"&se_status="+$("#se_status").val()).load();
+    datatable.ajax.url('/confirm/load?s_area=' + $("#s_area").val()+"&se_tname="+$("#se_tname").val()).load();
 });
 
 $("#template_refresh").on("click", function () {
-    datatable.ajax.url('/template/load?s_area=' + $("#s_area").val()+"&se_status="+$("#se_status").val()).load();
+    datatable.ajax.url('/confirm/load?s_area=' + $("#s_area").val()+"&se_tname="+$("#se_tname").val()).load();
 });
 var initForm = function (modal, data, opr = 0 ) {
     if (data) {

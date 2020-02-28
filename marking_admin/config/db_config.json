@@ -1,6 +1,6 @@
 {
   "mysql": {
-    "host": "172.17.0.1",
+    "host": "129.28.174.161",
     "user": "lgh",
     "password": "lghzlh",
     "database": "marking",
@@ -23,7 +23,7 @@
     "connect_info": [
       {
         "port": 6379,
-        "host": "172.17.0.1"
+        "host": "129.28.174.161"
       }
     ]
   }
