@@ -116,7 +116,18 @@ var initForm = function (modal, data, opr = 0 ) {
         console.log(data)
         modal.find('.modal-body input#e_id').val(data.id);
         modal.find('.modal-body input#e_opr').val(opr);
-        modal.find('.modal-body textarea#e_template_style').val(data.template_style);
+        let s_style = data.template_style;
+        s_style = s_style.replace(/ /g,"#");
+        modal.find('.modal-body textarea#e_template_style').val(s_style);
+        let prev = "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX\nXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX\n";
+        if (data.template_pos==1)
+        {
+            prev = s_style+"\n"+prev;
+        }
+        else{
+            prev = prev+s_style;
+        }
+        modal.find('.modal-body textarea#e_preview').val(prev);
         //modal.find('.modal-body select#s_template_pos').val(data.template_pos);
         modal.find('.modal-body select#s_template_pos').selectpicker('val', data.template_pos);
         modal.find('.modal-body input#e_area').val(data.area);
@@ -125,7 +136,6 @@ var initForm = function (modal, data, opr = 0 ) {
         if (opr == 1)
         {
             modal.find('.modal-body input#e_name').attr("readonly",false);
-            console.log("form status none");
             modal.find('.modal-footer button#saveTemplate').text("发布");
             modal.find('.modal-body #form-status').hide();
             // modal.find('.modal-body #form-status').style.display='none';
@@ -134,6 +144,16 @@ var initForm = function (modal, data, opr = 0 ) {
 
             modal.find('.modal-body input#e_name').attr("readonly",true);
             modal.find('.modal-body #form-status').show();
+            if (data.status==4)
+            {
+                console.log(data.status);
+                modal.find('.modal-footer button#saveTemplate').attr("disabled", true);
+            }
+            else
+            {
+                modal.find('.modal-footer button#saveTemplate').attr("disabled", false);
+
+            }
             modal.find('.modal-footer button#saveTemplate').text("审核");
             modal.find('.modal-body select#s_status').selectpicker('val', 2);
         }
