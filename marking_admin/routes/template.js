@@ -127,7 +127,7 @@ router.get('/save', async(req, res, next) => {
                 sql = sql + "where id=?";
                 params.push(e_id);
                 ret = await mysql.query(sql, params);
-                await common.saveOperateLog(req, "更新模板：" + e_area + ";ID: " + e_id);
+                await common.saveOperateLog(req, "更新模板：" +e_name +";"+e_area + ";UID: " + user.id);
             } 
             log.info("save user ret: ", ret);
         
@@ -183,7 +183,7 @@ router.get('/pub', async(req, res, next) => {
                     console.log("name:", e_name)
                     sql = "insert bs_template(area, template_style,template_pos,start_time,end_time,status,creator_id,uuid,name) values (?,?,?,?,?,?,?,?,?)";
                     ret = await mysql.query(sql, [e_area, e_template_style,e_template_pos, e_start_time, e_end_time, 4,  user.id, s_uuid,e_name]);
-                    await common.saveOperateLog(req, "新增模板：" + e_area+ ";ID: " + e_id);
+                    await common.saveOperateLog(req, "新增模板：" +name+";"+ e_area+ ";UID: " + user.id);
                     e_uuid = s_uuid;
                 }
             log.info("save user ret: ", ret);

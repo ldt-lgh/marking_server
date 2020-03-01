@@ -104,7 +104,7 @@ router.get('/save', async(req, res, next) => {
                 sql = sql + "where id=?";
                 params.push(e_id);
                 ret = await mysql.query(sql, params);
-                await common.saveOperateLog(req, "更新地市appkey：" + e_area+ ";ID: " + e_id );
+                await common.saveOperateLog(req, "更新appkey：" + e_area+ ";UID: " + user.id);
             } else {
 
                 // 判断是否有新增权限
@@ -123,7 +123,7 @@ router.get('/save', async(req, res, next) => {
                 } else {
                     sql = "insert bs_appkey(area, appkey,secret_key,creator_id) values (?,?,?,?)";
                     ret = await mysql.query(sql, [e_area, e_appkey, e_secretkey, user.id]);
-                    await common.saveOperateLog(req, "新增appkey：" + e_area+ ";ID: " + e_id);
+                    await common.saveOperateLog(req, "新增appkey：" + e_area+ ";UID: " + user.id);
                 }
             }
             log.info("save appkey ret: ", ret);
