@@ -12,7 +12,7 @@ var datatable = $('#users').DataTable({
         {
             "data": "id",
             "render": function (data, type, full, meta) {
-                return '<input type="checkbox" name="user_id_' + data + '" value="' + data + '">';
+                return '<input type="checkbox" name="user_id_' + data + '" value="' + data + '">'+data;
             }
         },
         {"data": "name"},

@@ -183,7 +183,7 @@ router.get('/pub', async(req, res, next) => {
                     console.log("name:", e_name)
                     sql = "insert bs_template(area, template_style,template_pos,start_time,end_time,status,creator_id,uuid,name) values (?,?,?,?,?,?,?,?,?)";
                     ret = await mysql.query(sql, [e_area, e_template_style,e_template_pos, e_start_time, e_end_time, 4,  user.id, s_uuid,e_name]);
-                    await common.saveOperateLog(req, "新增模板：" + e_area);
+                    await common.saveOperateLog(req, "新增模板：" + e_area+ ";ID: " + e_id);
                     e_uuid = s_uuid;
                 }
             log.info("save user ret: ", ret);

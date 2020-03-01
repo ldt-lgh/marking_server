@@ -34,7 +34,7 @@ var datatables = $('#loginLogs').DataTable({
         "lengthMenu": "显示 _MENU_ 条",
         "loadingRecords": "加载中...",
         "processing": "处理中...",
-        "search": "搜索角色名称：",
+        "search": "搜索用户ID：",
         "zeroRecords": "没有匹配的数据",
         "paginate": {
             "first": "第一页",
