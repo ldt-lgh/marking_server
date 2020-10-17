@@ -14,17 +14,16 @@
                             <span>地市：</span>
                             <input type="text" class=".col-xs-4" id="s_area" placeholder="请输入地市名称" />
                             <span>状态：</span>
-                            <select class="selectpicker"  id="se_status" name="se_status" >
+                            <select class="selectpicker" id="se_status" name="se_status">
                                 <option value="0" selected="selected"></option>
-                                <option value="1" >待审核</option>
-                                <option value="2" >审核通过</option>
-                                <option value="3" >审核不通过</option>
-                                <option value="4" >已发布</option>
-                              </select>
+                                <option value="1">待审核</option>
+                                <option value="2">审核通过</option>
+                                <option value="3">审核不通过</option>
+                                <option value="4">已发布</option>
+                            </select>
                         </div>
                         <div class="col-md-3 col-sm-4">
-                            <a class="btn btn-default btn-sm" href="javascript:void(0)" id="template-search"><i
-                                    class="glyphicon glyphicon-search"></i>
+                            <a class="btn btn-default btn-sm" href="javascript:void(0)" id="template-search"><i class="glyphicon glyphicon-search"></i>
                                 查询</a>
                         </div>
                     </div>
@@ -38,25 +37,22 @@
                 <div class="box-header with-border">
                     <b>工具栏： </b>
                     <caption>
-                        <button type="button" class="btn btn-default" id="template_refresh"><i
-                                class="fa fa-refresh icon-white"></i> 刷新
+                        <button type="button" class="btn btn-default" id="template_refresh"><i class="fa fa-refresh icon-white"></i> 刷新
                         </button>
-                        <!-- <% if(permissions.add) { %>
+                         <% if(permissions.add) { %>
                         <button type="button" class="btn btn-success" id="template_add" data-toggle="modal"
-                                data-target="#e-dialog-template" data-whatever=""><i
+                                data-target="#e-dialog-add-template" data-whatever=""><i
                                     class="glyphicon glyphicon-edit icon-white"></i> 新增
                         </button>
-                        <%}%> -->
+                        <%}%> 
                         <% if(permissions.update) { %>
-                        <button type="button" class="btn btn-info" id="template_edit" data-toggle="modal"><i
-                                class="fa fa-edit icon-white"></i> 发布
+                        <button type="button" class="btn btn-info" id="template_edit" data-toggle="modal"><i class="fa fa-edit icon-white"></i> 发布
                         </button>
                         <%}%>
-                        <!-- <% if(permissions.delete) { %>
-                        <button type="button" class="btn btn-danger" id="template_batch_remove"><i
-                                class="fa fa-remove icon-white"></i> 删除
+                         <% if(permissions.delete) { %>
+                        <button type="button" class="btn btn-danger" id="template_batch_remove"><i class="fa fa-remove icon-white"></i> 删除
                         </button>
-                        <%}%> -->
+                        <%}%> 
                         <!-- <button type="button" class="btn btn-info" id="template_find" onclick="optionUserData(this);"><i
                                     class="glyphicon glyphicon-zoom-in icon-white"></i> 详情
                         </button> -->
@@ -116,7 +112,7 @@
                 <h4 class="modal-title" id="exampleModalLabel">模板操作</h4>
             </div>
             <div class="modal-body">
-                <form class="form-horizontal" id="e-template-form">审核
+                <form class="form-horizontal" id="e-template-form">编辑审核
                     <div class="box-body">
                         <input type="hidden" data-name="e_id" name="e_id" id="e_id"/>
                         <input type="hidden" data-name="e_opr" name="e_opr" id="e_opr"/>
@@ -134,23 +130,27 @@
                     readonly = "readonly" >                                     
                         </div>
                         </div>
-                        <div class="form-group" id="form-template">
-                            <label for="template" class="col-sm-2 control-label">模板样式</label>
-                            <div class="col-sm-10">
-                                <textarea class="form-control" rows="2" id="e_template_style" name="e_template_style"
-                                       placeholder="请设置template" style="font-size:12pt;line-height:14pt" readonly = "readonly"></textarea><label id="template_password_desc">#表示空格</label>
-                            </div>
                         </div>
-                        <div class="form-group" id="form-template">
-                            <label for="template"  class="col-sm-2 control-label">模板位置</label>
-                            <div class="col-sm-10">
-                                <select class="selectpicker"  id="s_template_pos" name="s_template_pos" readonly = "readonly">
-                                    <option value="1">上</option>
-                                    <option value="2">下</option>
-                                  </select>
-                                <!-- <input type="text" class="form-control" id="e_template_pos" name="e_template_pos"
-                                       placeholder="请输入template"> -->
-                            </div>
+                        <div class="form-group" id="template_top" name="template_top">
+                            <label for="e_template_top" class="col-sm-2 control-label">上</label>
+                        <div class="col-sm-10">
+                                <textarea class="form-control" rows="2" id="e_template_top" name="e_template_top"
+                                       placeholder="请设置顶部" style="font-size:12pt;line-height:14pt" ></textarea><label id="template_desc">#表示空格</label>
+                    </div>
+                        </div>
+                        <div class="form-group" id="template_main" name="template_main">
+                            <label for="e_template_main" class="col-sm-2 control-label">主体</label>
+                        <div class="col-sm-10">
+                                <textarea class="form-control" rows="2" id="e_template_main" name="e_template_main"
+                                       placeholder="主体" style="font-size:12pt;line-height:14pt" readonly = "readonly"></textarea><label id="template_desc">#表示空格</label>
+                        </div>
+                        </div>
+                        <div class="form-group" id="template_bottom" name="template_bottom">
+                            <label for="e_template_bottom" class="col-sm-2 control-label">下</label>
+                        <div class="col-sm-10">
+                                <textarea class="form-control" rows="2" id="e_template_bottom" name="e_template_bottom"
+                                       placeholder="请设置底部" style="font-size:12pt;line-height:14pt" ></textarea><label id="template_desc">#表示空格</label>
+                        </div>
                         </div>
                         <div class="form-group" id="form-starttime">
                             <label for="template" class="col-sm-2 control-label">启用时间</label>
@@ -170,7 +170,8 @@
                             <label for="template" class="col-sm-2 control-label">状态</label>
                             <div class="col-sm-10">
                                   <select class="selectpicker"  id="s_status" name="s_status" >
-                                    <option value="2" selected="selected">审核通过</option>
+                                    <option value="1" selected="selected">待审核</option>
+                                    <option value="2" >审核通过</option>
                                     <option value="3" >审核不通过</option>
                                   </select>
 
@@ -188,7 +189,65 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
-                <button type="button" class="btn btn-primary" id="saveTemplate">发布</button>
+                <button type="button" class="btn btn-primary" id="saveTemplate">保存</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="e-dialog-edit-template" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                            aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="exampleModalLabel">编辑模板</h4>
+            </div>
+            <div class="modal-body">
+                <form class="form-horizontal" id="e-edit-template-form" name="e-edit-template-form">编辑
+                    <div class="box-body">
+                        <input type="hidden" data-name="e_id" name="e_id" id="e_id"/>
+                        <input type="hidden" data-name="e_opr" name="e_opr" id="e_opr"/>
+                        <div class="form-group" >
+                            <label for="name" class="col-sm-2 control-label">模板名</label>
+                        <div class="col-sm-10">
+ <input type="text" class="form-control" id="e_name" name="e_name"
+                    >                                     
+                    </div>
+                        </div>
+                        <div class="form-group" id="template_top" name="template_top">
+                            <label for="e_template_top" class="col-sm-2 control-label">上</label>
+                        <div class="col-sm-10">
+                                <textarea class="form-control" rows="2" id="e_template_top" name="e_template_top"
+                                       placeholder="请设置顶部" style="font-size:12pt;line-height:14pt" ></textarea><label id="template_desc">#表示空格</label>
+                    </div>
+                        </div>
+                        <div class="form-group" id="template_main" name="template_main">
+                            <label for="e_template_main" class="col-sm-2 control-label">主体</label>
+                        <div class="col-sm-10">
+                                <textarea class="form-control" rows="2" id="e_template_main" name="e_template_main"
+                                       placeholder="主体" style="font-size:12pt;line-height:14pt" readonly = "readonly"></textarea><label id="template_desc">#表示空格</label>
+                        </div>
+                        </div>
+                        <div class="form-group" id="template_bottom" name="template_bottom">
+                            <label for="e_template_bottom" class="col-sm-2 control-label">下</label>
+                        <div class="col-sm-10">
+                                <textarea class="form-control" rows="2" id="e_template_bottom" name="e_template_bottom"
+                                       placeholder="请设置底部" style="font-size:12pt;line-height:14pt" ></textarea><label id="template_desc">#表示空格</label>
+                        </div>
+                        </div>
+                        <div class="form-group" id="form-preview">
+                            <label for="template" class="col-sm-2 control-label">预览</label>
+                            <div class="col-sm-10">
+                                <textarea class="form-control" rows="6" id="e_template_preview" name="e_template_preview"
+                                style="font-size:12pt;line-height:14pt"  readonly = "readonly"    ></textarea><label id="template_password_desc">XXX表示原始字符串</label>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                <button type="button" class="btn btn-primary" id="saveTemplate">保存</button>
             </div>
         </div>
     </div>

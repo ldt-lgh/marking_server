@@ -107,6 +107,14 @@ router.get('/save', async(req, res, next) => {
         var e_id = req.query.e_id;
         var e_area= req.query.e_area;
         var e_template_style= req.query.e_template_style;
+        log.info("style1:",e_template_style)
+        //e_template_style = e_template_style.replace(/\\r\\n/g, "\\r\\n"); 
+        //e_template_style = e_template_style.replace(/[\n]/g, "\\\\n")
+
+        e_template_style=e_template_style.replace("/[\n]/g","$").replace("/[\r]/g","$")
+         e_template_style=e_template_style.replace(/\r\n/g, "$")
+        //e_template_style=e_template_style.replace("/\n/g","\\\\n")
+        log.info("style:",e_template_style)
         var e_template_pos= req.query.s_template_pos;
         var e_start_time = req.query.e_start_time;
         var e_end_time = req.query.e_end_time;
@@ -151,6 +159,8 @@ router.get('/pub', async(req, res, next) => {
         var e_id = req.query.e_id;
         var e_area= req.query.e_area;
         var e_template_style= req.query.e_template_style;
+         e_template_style=e_template_style.replace(/\r\n/g, "$")
+        log.info(e_template_style)
         var e_template_pos= req.query.s_template_pos;
         var e_start_time = req.query.e_start_time;
         var e_end_time = req.query.e_end_time;
@@ -165,7 +175,7 @@ router.get('/pub', async(req, res, next) => {
             return;
         // }
         } 
-    var s_uuid = uuid();
+//    var s_uuid = uuid();
                 // 判断是否有新增权限
                 // let addPermission = await perm.permission(req, 'add');
                 // if(!addPermission) {
@@ -181,13 +191,51 @@ router.get('/pub', async(req, res, next) => {
                     result.msg = "同时效模板已发布";
                 } else {
                     console.log("name:", e_name)
-                    sql = "insert bs_template(area, template_style,template_pos,start_time,end_time,status,creator_id,uuid,name) values (?,?,?,?,?,?,?,?,?)";
-                    ret = await mysql.query(sql, [e_area, e_template_style,e_template_pos, e_start_time, e_end_time, 4,  user.id, s_uuid,e_name]);
-                    await common.saveOperateLog(req, "新增模板：" +name+";"+ e_area+ ";UID: " + user.id);
-                    e_uuid = s_uuid;
+                    sql = "insert bs_template(area, template_style,template_pos,start_time,end_time,status,creator_id,name) values (?,?,?,?,?,?,?,?)";
+                    ret = await mysql.query(sql, [e_area, e_template_style,e_template_pos, e_start_time, e_end_time, 4,  user.id, e_name]);
+                    await common.saveOperateLog(req, "新增模板：" +e_name+";"+ e_area+ ";UID: " + user.id);
+                    //e_uuid = s_uuid;
                 }
-            log.info("save user ret: ", ret);
+            //log.info("save user ret: ", ret);
         res.status(200).json(result);
+    } catch (e) {
+        log.error("save template ret:", e);
+        result.error = 1;
+        result.msg = "保存失败，请联系管理员";
+        res.status(200).json(result);
+    }
+});
+router.get('/savetemple', async(req, res, next) => {
+    var result = {
+        error: 0,
+        msg: ""
+    };
+    try {
+        var user = req.session.user;
+        log.info("user save params: ", req.query);
+        var e_id = req.query.e_id;
+        var e_template_style= req.query.e_template_style;
+        var e_uuid = req.query.uuid
+        var e_name = req.query.e_name;
+        if (e_name.trim() == "") {
+            result.msg = "名称不能为空";
+        }       
+        if (result.msg != "") {
+            result.error = 1;
+        // }
+        } else {
+            var ret, sql;
+                sql = "update bs_template set template_style=?, modified_id=?, modified_at=?";
+                var params = [ e_template_style, user.id, new Date()];
+                sql = sql + "where id=?";
+                params.push(e_id);
+                ret = await mysql.query(sql, params);
+                await common.saveOperateLog(req, "更新模板：" +e_name +";UID: " + user.id);
+            } 
+            log.info("save user ret: ", ret);
+        
+        res.status(200).json(result);
+        
     } catch (e) {
         log.error("save template ret:", e);
         result.error = 1;
