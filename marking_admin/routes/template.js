@@ -184,8 +184,8 @@ router.get('/pub', async(req, res, next) => {
                 //     res.status(200).json(result);
                 //     return;
                 // }
-                sql = "select * from bs_template where id=? and start_time=? and end_time=?";
-                var users = await mysql.query(sql,[e_id, e_start_time, e_end_time]);
+                sql = "select * from bs_template where area=? and start_time=? and end_time=? and status=4";
+                var users = await mysql.query(sql,[e_area, e_start_time, e_end_time]);
                 if (users.length > 0) {
                     result.error = 1;
                     result.msg = "同时效模板已发布";
