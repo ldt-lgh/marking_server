@@ -141,7 +141,7 @@ var initForm = function(modal, data, opr = 0) {
   if (opr == 2) {
     modal.find(".modal-body input#e_name").attr("readonly", false);
     modal.find(".modal-body input#e_area").attr("readonly", false);
-    let main = "xxxxxxxxxxxxxx\nxxxxxxxxxxxxxx";
+    let main = "xxxxxxxx\nxxxxxxxx";
     modal.find(".modal-body textarea#e_template_main").val(main);
     $("#template_top").show();
     modal.find(".modal-body #template_bottom").show();
@@ -150,7 +150,6 @@ var initForm = function(modal, data, opr = 0) {
     modal.find(".modal-body input#e_area").val("");
     modal.find(".modal-body #e_template_top").val("");
     modal.find(".modal-body #e_template_bottom").val("");
-    modal.find(".modal-body #e_template_main").val("");
     modal.find(".modal-body #e_preview").val("");
     return;
   }
