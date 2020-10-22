@@ -240,6 +240,30 @@ $("#e_template_top, #e_template_bottom").on("keyup", function() {
     .val()
     .trim("\n");
   let main = $("#e_template_main").val();
+  let top_lines = top.split("\n");
+  let bottom_lines = bottom.split("\n");
+  top_lines.map((item, index) => {
+    if (item.length > 16) {
+      new Noty({
+        type: "warning",
+        layout: "topCenter",
+        text: "每行不可超过16个字符",
+        timeout: "2000"
+      }).show();
+      return;
+    }
+  });
+  bottom_lines.map((item, index) => {
+    if (item.length > 16) {
+      new Noty({
+        type: "warning",
+        layout: "topCenter",
+        text: "每行不可超过16个字符",
+        timeout: "2000"
+      }).show();
+      return;
+    }
+  });
   let total_lines = top.split("\n").length + bottom.split("\n").length;
   if (total_lines > 3) {
     new Noty({
@@ -352,7 +376,30 @@ $("#e-dialog-template")
     } else {
       bl = style["bottom"].split("%0D%0A").length;
     }
-
+    let top_lines = style['top'].split("%0D%0A");
+    let bottom_lines = style['bottom'].split("%0D%0A");
+    top_lines.map((item, index) => {
+      if (item.length > 16) {
+        new Noty({
+          type: "warning",
+          layout: "topCenter",
+          text: "每行不可超过16个字符",
+          timeout: "2000"
+        }).show();
+        return;
+      }
+    });
+    bottom_lines.map((item, index) => {
+      if (item.length > 16) {
+        new Noty({
+          type: "warning",
+          layout: "topCenter",
+          text: "每行不可超过16个字符",
+          timeout: "2000"
+        }).show();
+        return;
+      }
+    });
     let total_lines = style["top"].split("%0D%0A").length + bl;
     if (total_lines > 3) {
       new Noty({
