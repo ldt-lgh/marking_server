@@ -232,7 +232,8 @@ $("#e-dialog-template").on("show.bs.modal", function(event) {
   // Update the modal's content. We'll use jQuery here, but you could use a data binding library or other methods instead.
   initForm(modal, data, opr);
 });
-$("#e_template_top, #e_template_bottom").on("keyup", function() {
+$("#e_template_top, #e_template_bottom").on("keyup", function(e) {
+  console.log("key:", e.key);
   let top = $("#e_template_top")
     .val()
     .trim("\n");
@@ -244,6 +245,7 @@ $("#e_template_top, #e_template_bottom").on("keyup", function() {
   let bottom_lines = bottom.split("\n");
   top_lines.map((item, index) => {
     if (item.length > 16) {
+      item = item.substring(1, 16);
       new Noty({
         type: "warning",
         layout: "topCenter",
@@ -255,6 +257,7 @@ $("#e_template_top, #e_template_bottom").on("keyup", function() {
   });
   bottom_lines.map((item, index) => {
     if (item.length > 16) {
+      item = item.substring(1, 16);
       new Noty({
         type: "warning",
         layout: "topCenter",
@@ -264,7 +267,17 @@ $("#e_template_top, #e_template_bottom").on("keyup", function() {
       return;
     }
   });
-  let total_lines = top.split("\n").length + bottom.split("\n").length;
+  top = top_lines.join("\n");
+  bottom = bottom_lines.join("\n");
+    let bl = 0;
+    if (bottom == "") {
+      bl = 0;
+    } else {
+      bl = bottom.split("%0D%0A").length;
+    }
+      //$("#e_template_top").val(top);
+      //$("#e_template_bottom").val(bottom);
+  let total_lines = top.split("\n").length + bl;
   if (total_lines > 3) {
     new Noty({
       type: "warning",
@@ -376,8 +389,8 @@ $("#e-dialog-template")
     } else {
       bl = style["bottom"].split("%0D%0A").length;
     }
-    let top_lines = style['top'].split("%0D%0A");
-    let bottom_lines = style['bottom'].split("%0D%0A");
+    let top_lines = style["top"].split("%0D%0A");
+    let bottom_lines = style["bottom"].split("%0D%0A");
     top_lines.map((item, index) => {
       if (item.length > 16) {
         new Noty({
