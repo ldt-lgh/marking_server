@@ -364,7 +364,7 @@ $("#e-dialog-template")
       } else if (dt.indexOf("e_opr") > -1) {
         opr = dt.split("=")[1];
         console.log("opr:", opr);
-        if (opr == "1" || opr == "2" || opr == "0") {
+        if (opr == 1 || opr == 2 || opr == 0) {
           url = "template/save";
         }
       } else if (dt.indexOf("e_template_top") > -1) {
