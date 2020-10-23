@@ -67,7 +67,7 @@ router.get('/load', async(req, res, next) => {
                 id: result[i].id,
                 area: result[i].area,
                 template_style: result[i].template_style,
-                template_pos: result[i].template_pos,
+                //template_pos: result[i].template_pos,
                 start_time:result[i].start_time ? moment(result[i].start_time).format("YYYY-MM-DD"):"",
                 end_time:result[i].end_time ? moment(result[i].end_time).format("YYYY-MM-DD"):"",
                 status:result[i].status,
@@ -115,7 +115,7 @@ router.get('/save', async(req, res, next) => {
          e_template_style=e_template_style.replace(/\r\n/g, "$")
         //e_template_style=e_template_style.replace("/\n/g","\\\\n")
         log.info("style:",e_template_style)
-        var e_template_pos= req.query.s_template_pos;
+        //var e_template_pos= req.query.s_template_pos;
         var e_start_time = req.query.e_start_time;
         var e_end_time = req.query.e_end_time;
         var e_status= req.query.s_status;
@@ -130,8 +130,8 @@ router.get('/save', async(req, res, next) => {
         // }
         } else {
             var ret, sql;
-                sql = "update bs_template set area=?,template_style=?, template_pos=?,start_time=?, end_time=?, status=?, modified_id=?, modified_at=?";
-                var params = [e_area, e_template_style,e_template_pos, e_start_time, e_end_time, e_status, user.id, new Date()];
+                sql = "update bs_template set area=?,template_style=?, start_time=?, end_time=?, status=?, modified_id=?, modified_at=?";
+                var params = [e_area, e_template_style, e_start_time, e_end_time, e_status, user.id, new Date()];
                 sql = sql + "where id=?";
                 params.push(e_id);
                 ret = await mysql.query(sql, params);
