@@ -141,6 +141,7 @@ var initForm = function(modal, data, opr = 0) {
   if (opr == 2) {
     modal.find(".modal-body input#e_name").attr("readonly", false);
     modal.find(".modal-body input#e_area").attr("readonly", false);
+    modal.find(".modal-body input#e_opr").val(opr);
     let main = "xxxxxxxx\nxxxxxxxx";
     modal.find(".modal-body textarea#e_template_main").val(main);
     $("#template_top").show();
@@ -364,7 +365,10 @@ $("#e-dialog-template")
       } else if (dt.indexOf("e_opr") > -1) {
         opr = dt.split("=")[1];
         console.log("opr:", opr);
-        if (opr == 1 || opr == 2 || opr == 0) {
+        if (opr == 2){
+          url = "template/add";
+        }
+        else if (opr == 1 || opr == 0) {
           url = "template/save";
         }
       } else if (dt.indexOf("e_template_top") > -1) {

@@ -53,7 +53,7 @@ router.get('/load', async(req, res, next) => {
         draw = parseInt(draw) || 0;
         console.log("sqlcount:", sqlcount);
         var memuCount = await mysql.query(sqlcount);
-        sql = sql + " ORDER BY id limit " + start + "," + length;
+        sql = sql + " ORDER BY id desc limit " + start + "," + length;
         console.log("sql:", sql);
         var result = await mysql.query(sql);
         var backResult = {
@@ -141,6 +141,63 @@ router.get('/save', async(req, res, next) => {
         
         res.status(200).json(result);
         
+    } catch (e) {
+        log.error("save template ret:", e);
+        result.error = 1;
+        result.msg = "保存失败，请联系管理员";
+        res.status(200).json(result);
+    }
+});
+router.get('/add', async(req, res, next) => {
+    var result = {
+        error: 0,
+        msg: ""
+    };
+    try {
+        var user = req.session.user;
+        log.info("user add params: ", req.query);
+        var e_id = req.query.e_id;
+        var e_area= req.query.e_area;
+        var e_template_style= req.query.e_template_style;
+         e_template_style=e_template_style.replace(/\r\n/g, "$")
+        log.info(e_template_style)
+        var e_template_pos= req.query.s_template_pos;
+        var e_start_time = req.query.e_start_time;
+        var e_end_time = req.query.e_end_time;
+        var e_status= req.query.s_status;
+        var e_uuid = req.query.uuid
+        var e_name = req.query.e_name;
+        if (e_area== "" || e_area.trim() == "") {
+            result.msg = "地市名称不能为空";
+        }       
+        if (result.msg != "") {
+            result.error = 1;
+            return;
+        // }
+        } 
+//    var s_uuid = uuid();
+                // 判断是否有新增权限
+                // let addPermission = await perm.permission(req, 'add');
+                // if(!addPermission) {
+                //     result.error = 1;
+                //     result.msg = "保存失败，没有新增权限，请联系管理员";
+                //     res.status(200).json(result);
+                //     return;
+                // }
+                sql = "select * from bs_template where area=? and start_time=? and end_time=? and status=4";
+                var users = await mysql.query(sql,[e_area, e_start_time, e_end_time]);
+                if (users.length > 0) {
+                    result.error = 1;
+                    result.msg = "同时效模板已发布";
+                } else {
+                    console.log("name:", e_name)
+                    sql = "insert bs_template(area, template_style,template_pos,start_time,end_time,status,creator_id,name) values (?,?,?,?,?,?,?,?)";
+                    ret = await mysql.query(sql, [e_area, e_template_style,e_template_pos, e_start_time, e_end_time, 0,  user.id, e_name]);
+                    await common.saveOperateLog(req, "新增模板：" +e_name+";"+ e_area+ ";UID: " + user.id);
+                    //e_uuid = s_uuid;
+                }
+            //log.info("save user ret: ", ret);
+        res.status(200).json(result);
     } catch (e) {
         log.error("save template ret:", e);
         result.error = 1;
