@@ -161,7 +161,7 @@ var initForm = function(modal, data, opr = 0) {
     let s_style = data.template_style;
     console.log(s_style);
     if (s_style != undefined) {
-      s_style = s_style.replace(/ /g, "#");
+      //s_style = s_style.replace(/ /g, "#");
       s_style = s_style.replace(/\$/g, "\\n");
       s_style = s_style.replace(/\\\\r/g, "\\r");
       console.log(s_style);
@@ -172,7 +172,7 @@ var initForm = function(modal, data, opr = 0) {
       modal.find(".modal-body textarea#e_template_main").val(t.main);
       let prev = [t.top, t.main, t.bottom].join("\n");
       //let prev = t.top+"\n"+t.main+"\n"+t.bottom
-      modal.find(".modal-body textarea#e_preview").val(prev);
+      modal.find(".modal-body textarea#e_preview").val(prev.replace(/\ /g,"#"));
     }
     if (opr == 0) {
       $("#template_top").hide();
@@ -236,11 +236,10 @@ $("#e-dialog-template").on("show.bs.modal", function(event) {
 $("#e_template_top, #e_template_bottom").on("keyup", function(e) {
   console.log("key:", e.key);
   let top = $("#e_template_top")
-    .val()
-    .trim("\n");
+    .val();
+    //.trim("\n");
   let bottom = $("#e_template_bottom")
-    .val()
-    .trim("\n");
+    .val();
   let main = $("#e_template_main").val();
   let top_lines = top.split("\n");
   let bottom_lines = bottom.split("\n");
@@ -276,6 +275,10 @@ $("#e_template_top, #e_template_bottom").on("keyup", function(e) {
     } else {
       bl = bottom.split("%0D%0A").length;
     }
+    let lt =top_lines[top_lines.length-1] 
+    let lb =bottom_lines[bottom_lines.length-1] 
+    if (lt.trim()=="" ) top_lines.pop()
+    if (lb.trim()=="" ) bottom_lines.pop()
       //$("#e_template_top").val(top);
       //$("#e_template_bottom").val(bottom);
   let total_lines = top.split("\n").length + bl;
@@ -293,6 +296,7 @@ $("#e_template_top, #e_template_bottom").on("keyup", function(e) {
   else if (top == "" && bottom != "") prev = [main, bottom].join("\n");
   else if (top != "" && bottom == "") prev = [top, main].join("\n");
   else prev = [main];
+    prev = prev.replace(/\ /g,"#")
   $("#e_preview").val(prev);
 });
 $("#template_edit").on("click", function() {
