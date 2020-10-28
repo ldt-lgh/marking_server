@@ -230,11 +230,13 @@ router.get('/template/:area', function (req, res, next) {
         attributes: ['id','name', 'area','uuid','template_style', 'template_pos', [Sequelize.fn('date_format', Sequelize.col('start_time'), '%Y-%m-%d %H:%i:%s'), 'start_time'],
             [Sequelize.fn('date_format', Sequelize.col('end_time'), '%Y-%m-%d %H:%i:%s'), 'end_time'], 'status'
         ],
-        order: ['status'],
+        order: [["modified_at", "DESC"]],
         where: {
-            'area': req.params.area
+            'area': req.params.area,
+            'status': 4
             // app_id:req.app_id
-        }
+        },
+        limit: 1
     }).then(result => {
         //let d = result.join("&");
         console.log(result[0].start_time)
