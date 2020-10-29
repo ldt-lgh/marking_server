@@ -230,14 +230,23 @@ router.get('/template/:area', function (req, res, next) {
         attributes: ['id','name', 'area','uuid','template_style', 'template_pos', [Sequelize.fn('date_format', Sequelize.col('start_time'), '%Y-%m-%d %H:%i:%s'), 'start_time'],
             [Sequelize.fn('date_format', Sequelize.col('end_time'), '%Y-%m-%d %H:%i:%s'), 'end_time'], 'status'
         ],
-        order: ['status'],
+        order: [["create_at", "DESC"]],
         where: {
-            'area': req.params.area
+            'area': req.params.area,
+            'status': 4,
+          start_time: {
+            [Op.lt]: Sequelize.fn("now")
+          },
+          end_time: {
+            [Op.gt]: Sequelize.fn("now")
+          },
+        },
             // app_id:req.app_id
-        }
+        limit: 1
     }).then(result => {
+        console.log(result);
         //let d = result.join("&");
-        console.log(result[0].start_time)
+        //console.log(result[0].start_time)
         console.log(typeof (result));
         console.log(result);
         let d = JSON.stringify(result);

@@ -53,7 +53,7 @@ router.get('/load', async(req, res, next) => {
         draw = parseInt(draw) || 0;
         console.log("sqlcount:", sqlcount);
         var memuCount = await mysql.query(sqlcount);
-        sql = sql + " ORDER BY id desc limit " + start + "," + length;
+        sql = sql + " ORDER BY create_at desc limit " + start + "," + length;
         console.log("sql:", sql);
         var result = await mysql.query(sql);
         var backResult = {
@@ -232,7 +232,7 @@ router.get('/pub', async(req, res, next) => {
             return;
         // }
         } 
-//    var s_uuid = uuid();
+    var s_uuid = uuid();
                 // 判断是否有新增权限
                 // let addPermission = await perm.permission(req, 'add');
                 // if(!addPermission) {
@@ -248,10 +248,10 @@ router.get('/pub', async(req, res, next) => {
                     result.msg = "同时效模板已发布";
                 } else {
                     console.log("name:", e_name)
-                    sql = "insert bs_template(area, template_style,template_pos,start_time,end_time,status,creator_id,name) values (?,?,?,?,?,?,?,?)";
-                    ret = await mysql.query(sql, [e_area, e_template_style,e_template_pos, e_start_time, e_end_time, 4,  user.id, e_name]);
+                    sql = "insert bs_template(area, template_style,template_pos,start_time,end_time,status,creator_id,uuid,name) values (?,?,?,?,?,?,?,?,?)";
+                    ret = await mysql.query(sql, [e_area, e_template_style,e_template_pos, e_start_time, e_end_time, 4,  user.id, s_uuid,e_name]);
                     await common.saveOperateLog(req, "新增模板：" +e_name+";"+ e_area+ ";UID: " + user.id);
-                    //e_uuid = s_uuid;
+                    e_uuid = s_uuid;
                 }
             //log.info("save user ret: ", ret);
         res.status(200).json(result);
