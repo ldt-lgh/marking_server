@@ -53,7 +53,7 @@ router.get('/load', async(req, res, next) => {
         draw = parseInt(draw) || 0;
         console.log("sqlcount:", sqlcount);
         var memuCount = await mysql.query(sqlcount);
-        sql = sql + " ORDER BY id desc limit " + start + "," + length;
+        sql = sql + " ORDER BY create_at desc limit " + start + "," + length;
         console.log("sql:", sql);
         var result = await mysql.query(sql);
         var backResult = {
