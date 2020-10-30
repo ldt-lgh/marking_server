@@ -8,11 +8,12 @@ var datatable = $('#users').DataTable({
     'ajax': '/confirm/load',
     'autoWidth': true,
     "ordering": false,
-    "columns": [{
-            "data": "id",
-            "render": function (data, type, full, meta) {
-                return '<input type="checkbox" name="template_id_' + data + '" value="' + data + '">';
-            }
+    "columns": [
+        {
+            "data": "area"
+        },
+        {
+            "data": "appkey"
         },
         {
             "data": "template_name"
@@ -21,29 +22,8 @@ var datatable = $('#users').DataTable({
             "data": "uuid"
         },
         {
-            "data": "area"
-        },
-        {
-            "data": "appkey"
-        },
-        {
-            "data": "machine_name",
-            "class": "text-center",
-        },
-        {
             "data": "create_at"
         },
-        {
-            "data": "is",
-            render: function (data, type, row, meta) {
-                // 判断菜单权限
-                var operate = "";
-                // if (permissions.update) {
-                //     operate = operate + '<a class="" data-toggle="modal" id="template_id_' + row.id + '" data-target="#e-dialog-template" data-whatever=\'' + JSON.stringify(row) + '\'><i class="fa fa-edit icon-white"></i> 核</a>&nbsp;&nbsp;';
-                // }
-                return operate;
-            }
-        }
     ],
     "language": {
         "emptyTable": "没有结果可以显示",

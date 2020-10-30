@@ -194,7 +194,7 @@ router.post('/confirm', function (req, res) {
     secret_key = req.secret_key;
     t.appkey= req.appkey
     // bconfirm.create(t).then(tm => {
-    updateOrCreate(bconfirm, {appkey:t.appkey,uuid:t.uuid}, t).then(result=>{
+    updateOrCreate(bconfirm, {appkey:t.machine_name,uuid:t.uuid,area:t.area,template_name:template_name}, t).then(result=>{
 
         res_json = {
             status: 'ok',

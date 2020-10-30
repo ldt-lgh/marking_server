@@ -29,11 +29,11 @@ router.get('/load', async(req, res, next) => {
         var se_tname= req.query.se_tname;
         console.log("s_area:", s_area);
         console.log("se_tname", se_tname);
-        if (s_area) {
+        if (s_area && s_area!="" && s_area!='undefined') {
             sqlcount = sqlcount + " and area like '%" + s_area.trim() + "%'";
             sql = sql + " and area like '%" + s_area.trim() + "%'";
         }
-        if (se_tname ) {
+        if (se_tname && se_tname!='undefined' && se_tname!='' ) {
             sqlcount = sqlcount + " and template_name like '%" + se_tname.trim() + "%'";
             sql = sql + " and template_name like '%" + se_tname.trim() + "%'";
         }
@@ -67,7 +67,6 @@ router.get('/load', async(req, res, next) => {
                 uuid: result[i].uuid,
                 template_name: result[i].template_name,
                 appkey: result[i].appkey,
-                machine_name:result[i].machine_name,
                 create_at:result[i].create_at? moment(result[i].create_at).format("YYYY-MM-DD HH:mm:ss"):"",
                 area:result[i].area,
             });
